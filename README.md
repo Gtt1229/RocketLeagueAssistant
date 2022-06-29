@@ -1,7 +1,7 @@
-# Rocket League Home Assistant Light Color Changer
-BakkesMod Plugin to Change Home Assistant Connected Lights
+# Rocket League Home Assistant
+BakkesMod Plugin to integrate Rocket League events to Home Assistant
 
-**It would be nice to make this more module to control more things than just lights**
+**These automations can be designed to control more things than just lights**
 
 ![RLHAtransparent](https://user-images.githubusercontent.com/23534272/175837042-8db1aea4-214a-4e69-92ab-2c4c705ffeda.png)
 
