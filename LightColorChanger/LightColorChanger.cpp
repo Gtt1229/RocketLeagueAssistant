@@ -10,7 +10,6 @@
 BAKKESMOD_PLUGIN(LightColorChanger, "Rocket League/HomeAsisstant Integration", plugin_version, PLUGINTYPE_BOTAI)
 
 
-
 std::shared_ptr<CVarManagerWrapper> _globalCvarManager;
 std::string haurlen = "None";
 
