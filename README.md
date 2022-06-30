@@ -55,7 +55,7 @@ There are 2 automations to create: One for **Blue**, one for **Orange**. _Custom
 ## Plugin Configuration:
 
 1. After plugin is installed, launch Rocket League and press F2
-2. Under the plugin tab, select LightColorChanger:
+2. Under the plugin tab, select RocketLeagueAssistant:
 
 ![image](https://user-images.githubusercontent.com/23534272/176254969-cc357749-22e5-4fa2-849a-419f3f824d40.png)
 
