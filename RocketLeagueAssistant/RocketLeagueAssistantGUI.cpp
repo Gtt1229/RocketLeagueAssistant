@@ -1,24 +1,24 @@
 #include "pch.h"
-#include "LightColorChanger.h"
+#include "RocketLeagueAssistant.h"
 #include "IMGUI/imgui_internal.h"
 #include "IMGUI/imgui_searchablecombo.h"
 #include "imgui_stdlib.h"
 
 
 // Plugin Settings Window code here
-std::string LightColorChanger::GetPluginName() {
-	return "LightColorChanger";
+std::string RocketLeagueAssistant::GetPluginName() {
+	return "RocketLeagueAssistant";
 }
 
-void LightColorChanger::SetImGuiContext(uintptr_t ctx) {
+void RocketLeagueAssistant::SetImGuiContext(uintptr_t ctx) {
 	ImGui::SetCurrentContext(reinterpret_cast<ImGuiContext*>(ctx));
 }
 
 // Render the plugin settings here
 // This will show up in bakkesmod when the plugin is loaded at
-//  f2 -> plugins -> LightColorChanger
-void LightColorChanger::RenderSettings() {
-	ImGui::TextUnformatted("LightColorChanger plugin settings");
+//  f2 -> plugins -> RocketLeagueAssistant
+void RocketLeagueAssistant::RenderSettings() {
+	ImGui::TextUnformatted("RocketLeagueAssistant plugin settings");
 
 
 	//Get URL related Cvars
@@ -32,6 +32,9 @@ void LightColorChanger::RenderSettings() {
 
 	CVarWrapper demosEnableCvar = cvarManager->getCvar("demos_enabled");
 	CVarWrapper haDemosCvargui = cvarManager->getCvar("ha_demos");
+
+	CVarWrapper overtimeEnableCvar = cvarManager->getCvar("overtime_enabled");
+	CVarWrapper haOvertimeCvargui = cvarManager->getCvar("ha_overtime");
 
 	CVarWrapper freeplayEnableCvar = cvarManager->getCvar("freeplay_enabled");
 	CVarWrapper haFreeplayCvargui = cvarManager->getCvar("ha_freeplay");
@@ -68,6 +71,8 @@ void LightColorChanger::RenderSettings() {
 
 	if (enabled == true) {
 
+		//Team color hook Gui
+
 		bool teamsEnabled = teamsEnableCvar.getBoolValue();
 
 				
@@ -103,6 +108,10 @@ void LightColorChanger::RenderSettings() {
 
 			}
 		}
+		 
+
+		//Demos hook Gui
+
 		bool demosEnabled = demosEnableCvar.getBoolValue();
 
 		if (ImGui::Checkbox("Enable Demos Webhook", &demosEnabled)) {
@@ -123,6 +132,32 @@ void LightColorChanger::RenderSettings() {
 
 			}
 		}
+
+
+		//Overtime hook GUI
+
+		bool overtimeEnabled = overtimeEnableCvar.getBoolValue();
+
+		if (ImGui::Checkbox("Enable Overtime Webhook", &overtimeEnabled)) {
+			overtimeEnableCvar.setValue(overtimeEnabled);
+		}
+		if (ImGui::IsItemHovered()) {
+			ImGui::SetTooltip("Toggle Webhook");
+		}
+
+		if (overtimeEnabled == true) {
+
+			if (!haOvertimeCvargui) { return; }
+			std::string reqovertimeUrlex = haOvertimeCvargui.getStringValue();
+
+			if (ImGui::InputText("Home Assistant Web Hook URL For Overtime", &reqovertimeUrlex)) {
+
+				haOvertimeCvargui.setValue(reqovertimeUrlex);
+
+			}
+		}
+
+		//Freeplay hook Gui
 
 		bool freeplayEnabled = freeplayEnableCvar.getBoolValue();
 
@@ -145,6 +180,8 @@ void LightColorChanger::RenderSettings() {
 			}
 		}
 
+		//Main Menu hook Gui
+
 		bool mainmenuEnabled = mainmenuEnableCvar.getBoolValue();
 
 		if (ImGui::Checkbox("Enable Main Menu Webhook", &mainmenuEnabled)) {
@@ -165,6 +202,8 @@ void LightColorChanger::RenderSettings() {
 
 			}
 		}
+
+		//Exit hook Gui
 
 		bool exitEnabled = exitEnableCvar.getBoolValue();
 
@@ -223,7 +262,7 @@ void LightColorChanger::RenderSettings() {
 
 
 // Do ImGui rendering here
-void LightColorChanger::Render()
+void RocketLeagueAssistant::Render()
 {
 	if (!ImGui::Begin(menuTitle_.c_str(), &isWindowOpen_, ImGuiWindowFlags_None))
 	{
@@ -241,43 +280,43 @@ void LightColorChanger::Render()
 }
 
 // Name of the menu that is used to toggle the window.
-std::string LightColorChanger::GetMenuName()
+std::string RocketLeagueAssistant::GetMenuName()
 {
-	return "LightColorChanger";
+	return "RocketLeagueAssistant";
 }
 
 // Title to give the menu
-std::string LightColorChanger::GetMenuTitle()
+std::string RocketLeagueAssistant::GetMenuTitle()
 {
 	return menuTitle_;
 }
 
 // Don't call this yourself, BM will call this function with a pointer to the current ImGui context
-//void LightColorChanger::SetImGuiContext(uintptr_t ctx)
+//void RocketLeagueAssistant::SetImGuiContext(uintptr_t ctx)
 //{
 //	ImGui::SetCurrentContext(reinterpret_cast<ImGuiContext*>(ctx));
 //}
 
 // Should events such as mouse clicks/key inputs be blocked so they won't reach the game
-bool LightColorChanger::ShouldBlockInput()
+bool RocketLeagueAssistant::ShouldBlockInput()
 {
 	return ImGui::GetIO().WantCaptureMouse || ImGui::GetIO().WantCaptureKeyboard;
 }
 
 // Return true if window should be interactive
-bool LightColorChanger::IsActiveOverlay()
+bool RocketLeagueAssistant::IsActiveOverlay()
 {
 	return true;
 }
 
 // Called when window is opened
-void LightColorChanger::OnOpen()
+void RocketLeagueAssistant::OnOpen()
 {
 	isWindowOpen_ = true;
 }
 
 // Called when window is closed
-void LightColorChanger::OnClose()
+void RocketLeagueAssistant::OnClose()
 {
 	isWindowOpen_ = false;
 }

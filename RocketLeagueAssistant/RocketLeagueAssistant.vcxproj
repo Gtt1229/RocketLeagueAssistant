@@ -9,8 +9,9 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{d5b21ea1-d6ec-410c-8064-c70f9df9b19a}</ProjectGuid>
-    <RootNamespace>LightColorChanger</RootNamespace>
+    <RootNamespace>RocketLeagueAssistant</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>RocketLeagueAssistant</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -108,8 +109,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="LightColorChanger.cpp" />
-    <ClCompile Include="LightColorChangerGUI.cpp" />
+    <ClCompile Include="RocketLeagueAssistant.cpp" />
+    <ClCompile Include="RocketLeagueAssistantGUI.cpp" />
     <ClCompile Include="imgui_stdlib.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -128,11 +129,11 @@
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="LightColorChanger.h" />
+    <ClInclude Include="RocketLeagueAssistant.h" />
     <ClInclude Include="version.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="LightColorChanger.rc" />
+    <ResourceCompile Include="RocketLeagueAssistant.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

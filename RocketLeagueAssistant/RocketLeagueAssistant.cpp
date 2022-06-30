@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "LightColorChanger.h"
+#include "RocketLeagueAssistant.h"
 #include "IMGUI/imgui_internal.h"
 #include "IMGUI/imgui_searchablecombo.h"
 #include "imgui_stdlib.h"
@@ -7,13 +7,13 @@
 
 
 
-BAKKESMOD_PLUGIN(LightColorChanger, "Rocket League/HomeAsisstant Integration", plugin_version, PLUGINTYPE_BOTAI)
+BAKKESMOD_PLUGIN(RocketLeagueAssistant, "Rocket League/HomeAsisstant Integration", plugin_version, PLUGINTYPE_BOTAI)
 
 
 std::shared_ptr<CVarManagerWrapper> _globalCvarManager;
 std::string haurlen = "None";
 
-void LightColorChanger::onLoad()
+void RocketLeagueAssistant::onLoad()
 {
 
 	//Enable Cvars
@@ -22,6 +22,7 @@ void LightColorChanger::onLoad()
 	cvarManager->registerCvar("demos_enabled", "1", "Enable Demos Webhook", true, true, 0, true, 1);
 	cvarManager->registerCvar("freeplay_enabled", "1", "Enable Freeplay Webhook", true, true, 0, true, 1);
 	cvarManager->registerCvar("mainmenu_enabled", "1", "Enable Mainemenu Webhook", true, true, 0, true, 1);
+	cvarManager->registerCvar("overtime_enabled", "1", "Enable Mainemenu Webhook", true, true, 0, true, 1);
 	cvarManager->registerCvar("exit_enabled", "1", "Enable Mainemenu Webhook", true, true, 0, true, 1);
 
 	//URL Cvars
@@ -30,23 +31,25 @@ void LightColorChanger::onLoad()
 	cvarManager->registerCvar("ha_demos", "http://192.168.1.256:8123/api/webhook/webhook-light-example-demos");
 	cvarManager->registerCvar("ha_freeplay", "http://192.168.1.256:8123/api/webhook/webhook-light-example-freeplay");
 	cvarManager->registerCvar("ha_mainmenu", "http://192.168.1.256:8123/api/webhook/webhook-light-example-mainmenu");
+	cvarManager->registerCvar("ha_overtime", "http://192.168.1.256:8123/api/webhook/webhook-light-example-overtime");
 	cvarManager->registerCvar("ha_exit", "http://192.168.1.256:8123/api/webhook/webhook-light-example-exit");
 
 	//Prep for possibly using tokens in the future for requests over https
 	cvarManager->registerCvar("ha_token", "Generated Token", "Home Assistant URL");
 
 	//Log plugin started
-	this->Log("LightColorChanger has started");
+	this->Log("RocketLeagueAssistant has started");
 	
 	//call LoadHooks method
 	this->LoadHooks();
+
 
 	_globalCvarManager = cvarManager;
 	
 
 }
 
-void LightColorChanger::onUnload()
+void RocketLeagueAssistant::onUnload()
 {
 
 	LOG("Force Closed Game Test");
@@ -54,10 +57,10 @@ void LightColorChanger::onUnload()
 }
 
 
-void LightColorChanger::LoadHooks()
+void RocketLeagueAssistant::LoadHooks()
 {
-	//Load GameHooks
-	gameWrapper->HookEvent("Function Engine.Pawn.GetTeam", std::bind(&LightColorChanger::LoadTeams, this, std::placeholders::_1));
+	//Teamcolors
+	gameWrapper->HookEvent("Function Engine.Pawn.GetTeam", std::bind(&RocketLeagueAssistant::LoadTeams, this, std::placeholders::_1));
 
 
 	//Demo Feature
@@ -66,14 +69,19 @@ void LightColorChanger::LoadHooks()
 			DemosHook(params);
 		});
 
+	//Overtime
+	gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.OnOvertimeUpdated", std::bind(&RocketLeagueAssistant::OvertimeHook, this, std::placeholders::_1));
+
 	//Main Menu
-	gameWrapper->HookEvent("Function TAGame.GFxData_MainMenu_TA.MainMenuAdded", std::bind(&LightColorChanger::MainMenuHook, this, std::placeholders::_1));
+	gameWrapper->HookEvent("Function TAGame.GFxData_MainMenu_TA.MainMenuAdded", std::bind(&RocketLeagueAssistant::MainMenuHook, this, std::placeholders::_1));
 
 	//On Game Exit
-	gameWrapper->HookEvent("Function ProjectX.GFxShell_X.ExitGame", std::bind(&LightColorChanger::ExitHook, this, std::placeholders::_1));
+	gameWrapper->HookEvent("Function ProjectX.GFxShell_X.ExitGame", std::bind(&RocketLeagueAssistant::ExitHook, this, std::placeholders::_1));
+
+
 }
 
-void LightColorChanger::SendCommands(std::string reqUrl)
+void RocketLeagueAssistant::SendCommands(std::string reqUrl)
 {
 
 	CurlRequest req;
@@ -89,13 +97,13 @@ void LightColorChanger::SendCommands(std::string reqUrl)
 		});
 }
 
-void LightColorChanger::LoadTeams(std::string name)
+void RocketLeagueAssistant::LoadTeams(std::string name)
 {
 	//Check if plugin is enabled
 	CVarWrapper enableCvar = cvarManager->getCvar("ha_enabled");
 	bool enabled = enableCvar.getBoolValue();
 	
-	if (!enabled) { LOG("LightColorChanger is not enabled"); return; }
+	if (!enabled) { LOG("RocketLeagueAssistant is not enabled"); return; }
 	
 	//Get player team and primary color
 
@@ -105,7 +113,7 @@ void LightColorChanger::LoadTeams(std::string name)
 		bool freeplayEnabled = freeplayEnabledCvar.getBoolValue();
 
 		if (freeplayEnabled == true) {
-			LOG("Player in freeplay, using freeplay color's");
+			LOG("Player in freeplay, using freeplay hook");
 			FreeplayHook();
 			return;
 		}
@@ -181,7 +189,7 @@ void LightColorChanger::LoadTeams(std::string name)
 	}
 }
 		
-void LightColorChanger::ConvertLinearColor(float red, float green, float blue) // NOT IN USE
+void RocketLeagueAssistant::ConvertLinearColor(float red, float green, float blue) // NOT IN USE
 {
 	//
 	// NOT IN USE
@@ -208,9 +216,14 @@ void LightColorChanger::ConvertLinearColor(float red, float green, float blue) /
 }
 
 
-void LightColorChanger::DemosHook(void* params)
+void RocketLeagueAssistant::DemosHook(void* params)
 {
-	
+	//Check if plugin is enabled
+	CVarWrapper enableCvar = cvarManager->getCvar("ha_enabled");
+	bool enabled = enableCvar.getBoolValue();
+
+	if (!enabled) { LOG("RocketLeagueAssistant is not enabled"); return; }
+
 	//See if demos are enabled
 	CVarWrapper demosEnabledCvar = cvarManager->getCvar("demos_enabled");
 	bool demosEnabled = demosEnabledCvar.getBoolValue();
@@ -266,8 +279,14 @@ void LightColorChanger::DemosHook(void* params)
 
 }
 
-void LightColorChanger::FreeplayHook()
+void RocketLeagueAssistant::FreeplayHook()
 {
+	//Check if plugin is enabled
+	CVarWrapper enableCvar = cvarManager->getCvar("ha_enabled");
+	bool enabled = enableCvar.getBoolValue();
+
+	if (!enabled) { LOG("RocketLeagueAssistant is not enabled"); return; }
+
 
 	//May be redundant, but good to check
 
@@ -284,8 +303,14 @@ void LightColorChanger::FreeplayHook()
 	}
 }
 
-void LightColorChanger::MainMenuHook(std::string name)
+void RocketLeagueAssistant::MainMenuHook(std::string name)
 {
+
+	//Check if plugin is enabled
+	CVarWrapper enableCvar = cvarManager->getCvar("ha_enabled");
+	bool enabled = enableCvar.getBoolValue();
+
+	if (!enabled) { LOG("RocketLeagueAssistant is not enabled"); return; }
 
 		//See if main menu hook is enabled
 	CVarWrapper mainmenuEnabledCvar = cvarManager->getCvar("mainmenu_enabled");
@@ -303,30 +328,61 @@ void LightColorChanger::MainMenuHook(std::string name)
 
 }
 
-void LightColorChanger::ExitHook(std::string name)
+void RocketLeagueAssistant::OvertimeHook(std::string name)
 {
+	//Check if plugin is enabled
+	CVarWrapper enableCvar = cvarManager->getCvar("ha_enabled");
+	bool enabled = enableCvar.getBoolValue();
 
-	{
-
-		//See if exit hook is enabled
-		CVarWrapper exitEnabledCvar = cvarManager->getCvar("exit_enabled");
-		bool exitEnabled = exitEnabledCvar.getBoolValue();
-		if (!exitEnabled) { LOG("Exit Automations are not enabled"); return; }
-
-		//Get mainmenu automation url, transform, and convert to string
-		CVarWrapper haExitCVar = cvarManager->getCvar("ha_exit");
-		if (!haExitCVar) { return; }
-		auto reqUrlexit = cvarManager->getCvar("ha_exit");
-		std::string reqUrlExitString = reqUrlexit.getStringValue();
-
-		LOG("Using Exit Hook");
-		SendCommands(reqUrlExitString);
-		  
-	}
+	if (!enabled) { LOG("RocketLeagueAssistant is not enabled"); return; }
+	
+	
+	//See if overtime hook is enabled
+	CVarWrapper overtimeEnabledCvar = cvarManager->getCvar("overtime_enabled");
+	bool overtimeEnabled = overtimeEnabledCvar.getBoolValue();
+	if (!overtimeEnabled) { LOG("Overtime Automations are not enabled"); return; }
+	
+	//Get overtime automation url, transform, and convert to string
+	CVarWrapper haOvertimeCVar = cvarManager->getCvar("ha_overtime");
+	if (!haOvertimeCVar) { return; }
+	auto reqUrlovertime = cvarManager->getCvar("ha_overtime");
+	std::string reqUrlOvertimeString = reqUrlovertime.getStringValue();
+	
+	LOG("Using Overtime Hook");
+	SendCommands(reqUrlOvertimeString);
+	
+	
 
 }
 
-void LightColorChanger::Log(std::string msg)
+void RocketLeagueAssistant::ExitHook(std::string name)
+{
+
+	//Check if plugin is enabled
+	CVarWrapper enableCvar = cvarManager->getCvar("ha_enabled");
+	bool enabled = enableCvar.getBoolValue();
+
+	if (!enabled) { LOG("RocketLeagueAssistant is not enabled"); return; }
+
+	//See if exit hook is enabled
+	CVarWrapper exitEnabledCvar = cvarManager->getCvar("exit_enabled");
+	bool exitEnabled = exitEnabledCvar.getBoolValue();
+	if (!exitEnabled) { LOG("Exit Automations are not enabled"); return; }
+
+	//Get exit automation url, transform, and convert to string
+	CVarWrapper haExitCVar = cvarManager->getCvar("ha_exit");
+	if (!haExitCVar) { return; }
+	auto reqUrlexit = cvarManager->getCvar("ha_exit");
+	std::string reqUrlExitString = reqUrlexit.getStringValue();
+
+	LOG("Using Exit Hook");
+	SendCommands(reqUrlExitString);
+	  
+
+
+}
+
+void RocketLeagueAssistant::Log(std::string msg)
 {
 	//Send logs to BakkesMod console
 	cvarManager->log(msg);

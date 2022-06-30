@@ -9,7 +9,7 @@
 constexpr auto plugin_version = stringify(VERSION_MAJOR) "." stringify(VERSION_MINOR) "." stringify(VERSION_PATCH) "." stringify(VERSION_BUILD);
 
 
-class LightColorChanger: public BakkesMod::Plugin::BakkesModPlugin, public BakkesMod::Plugin::PluginSettingsWindow, public BakkesMod::Plugin::PluginWindow
+class RocketLeagueAssistant: public BakkesMod::Plugin::BakkesModPlugin, public BakkesMod::Plugin::PluginSettingsWindow, public BakkesMod::Plugin::PluginWindow
 {
 
 	//std::shared_ptr<bool> enabled;
@@ -22,14 +22,21 @@ public:
 	void LoadHooks();
 	void LoadTeams(std::string name);
 	void ConvertLinearColor(float red, float green, float blue);
-	void ChangeLights(int teamNum);
+	void DemosHook(void* params);
+	void FreeplayHook();
+	void MainMenuHook(std::string name);
+	void OvertimeHook(std::string name);
+	void ExitHook(std::string name);
+
+	void SendCommands(std::string reqUrl);
+
 
 	//GUI
 	void RenderSettings() override;
 	std::string GetPluginName() override;
 	bool isWindowOpen_ = false;
 	bool isMinimized_ = false;
-	std::string menuTitle_ = "LightColorChanger";
+	std::string menuTitle_ = "RocketLeagueAssistant";
 	virtual void Render() override;
 	virtual std::string GetMenuName() override;
 	virtual std::string GetMenuTitle() override;
@@ -57,7 +64,7 @@ private:
 
 	bool isWindowOpen_ = false;
 	bool isMinimized_ = false;
-	std::string menuTitle_ = "LightColorChanger";
+	std::string menuTitle_ = "RocketLeagueAssistant";
 
 	virtual void Render() override;
 	virtual std::string GetMenuName() override;

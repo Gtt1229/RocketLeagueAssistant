@@ -24,7 +24,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="LightColorChanger.cpp">
+    <ClCompile Include="RocketLeagueAssistant.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
@@ -63,7 +63,7 @@
     <ClCompile Include="imgui\imguivariouscontrols.cpp">
       <Filter>imgui\implementation</Filter>
     </ClCompile>
-    <ClCompile Include="LightColorChangerGUI.cpp">
+    <ClCompile Include="RocketLeagueAssistantGUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="fmt\src\format.cc">
@@ -77,7 +77,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="LightColorChanger.h">
+    <ClInclude Include="RocketLeagueAssistant.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
@@ -130,7 +130,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="LightColorChanger.rc">
+    <ResourceCompile Include="RocketLeagueAssistant.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
