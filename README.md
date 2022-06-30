@@ -1,5 +1,5 @@
 # Rocket League Assistant
-BakkesMod Plugin to integrate Rocket League events to Home Assistant
+BakkesMod Plugin to integrate Rocket League events with Home Assistant
 
 **These automations can be designed to control more things than just lights**
 
