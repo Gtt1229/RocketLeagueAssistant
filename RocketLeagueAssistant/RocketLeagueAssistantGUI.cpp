@@ -23,9 +23,13 @@ void RocketLeagueAssistant::RenderSettings() {
 
 	//Get URL related Cvars
 	CVarWrapper enableCvar = cvarManager->getCvar("ha_enabled");
+
 	CVarWrapper teamsEnableCvar = cvarManager->getCvar("teams_enabled");
 	CVarWrapper haHomeCvargui = cvarManager->getCvar("ha_home");
 	CVarWrapper haAwayCvargui = cvarManager->getCvar("ha_away");
+
+	CVarWrapper goalScoredEnableCvar = cvarManager->getCvar("goalScored_enabled");
+	CVarWrapper haGoalScoredCvargui = cvarManager->getCvar("ha_goalScored");
 
 	CVarWrapper mainmenuEnableCvar = cvarManager->getCvar("mainmenu_enabled");
 	CVarWrapper haMainMenuCvargui = cvarManager->getCvar("ha_mainmenu");
@@ -47,6 +51,8 @@ void RocketLeagueAssistant::RenderSettings() {
 
 	if (!enableCvar) { return; }
 	if (!teamsEnableCvar) { return; }
+	if (!goalScoredEnableCvar) { return; }
+	if (!overtimeEnableCvar) { return; }
 	if (!demosEnableCvar) { return; }
 	if (!freeplayEnableCvar) { return; }
 	if (!mainmenuEnableCvar) { return; }
@@ -109,6 +115,29 @@ void RocketLeagueAssistant::RenderSettings() {
 			}
 		}
 		 
+
+		//Goal Scored hook Gui
+
+		bool goalScoredEnabled = goalScoredEnableCvar.getBoolValue();
+
+		if (ImGui::Checkbox("Enable goalScored Webhook", &goalScoredEnabled)) {
+			goalScoredEnableCvar.setValue(goalScoredEnabled);
+		}
+		if (ImGui::IsItemHovered()) {
+			ImGui::SetTooltip("Toggle Webhook");
+		}
+
+		if (goalScoredEnabled == true) {
+
+			if (!haGoalScoredCvargui) { return; }
+			std::string reqgoalScoredUrlex = haGoalScoredCvargui.getStringValue();
+
+			if (ImGui::InputText("Home Assistant Web Hook URL For Goals", &reqgoalScoredUrlex)) {
+
+				haGoalScoredCvargui.setValue(reqgoalScoredUrlex);
+
+			}
+		}
 
 		//Demos hook Gui
 

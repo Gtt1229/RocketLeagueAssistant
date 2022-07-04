@@ -20,15 +20,18 @@ void RocketLeagueAssistant::onLoad()
 	cvarManager->registerCvar("ha_enabled", "1", "Enable Plugin", true, true, 0, true, 1);
 	cvarManager->registerCvar("teams_enabled", "1", "Enable Team Colors", true, true, 0, true, 1);
 	cvarManager->registerCvar("demos_enabled", "1", "Enable Demos Webhook", true, true, 0, true, 1);
+	cvarManager->registerCvar("goalScored_enabled", "1", "Enable Overtime Webhook", true, true, 0, true, 1);
 	cvarManager->registerCvar("freeplay_enabled", "1", "Enable Freeplay Webhook", true, true, 0, true, 1);
 	cvarManager->registerCvar("mainmenu_enabled", "1", "Enable Mainemenu Webhook", true, true, 0, true, 1);
-	cvarManager->registerCvar("overtime_enabled", "1", "Enable Mainemenu Webhook", true, true, 0, true, 1);
-	cvarManager->registerCvar("exit_enabled", "1", "Enable Mainemenu Webhook", true, true, 0, true, 1);
+	cvarManager->registerCvar("overtime_enabled", "1", "Enable Overtime Webhook", true, true, 0, true, 1);
+	cvarManager->registerCvar("exit_enabled", "1", "Enable Exit Webhook", true, true, 0, true, 1);
+	cvarManager->registerCvar("isReplay", "0", "Replay boolean", true, true, 0, true, 1);
 
 	//URL Cvars
 	cvarManager->registerCvar("ha_home", "http://192.168.1.256:8123/api/webhook/webhook-light-example-home");
 	cvarManager->registerCvar("ha_away", "http://192.168.1.256:8123/api/webhook/webhook-light-example-away");
 	cvarManager->registerCvar("ha_demos", "http://192.168.1.256:8123/api/webhook/webhook-light-example-demos");
+	cvarManager->registerCvar("ha_goalScored", "http://192.168.1.256:8123/api/webhook/webhook-light-example-goalscored");
 	cvarManager->registerCvar("ha_freeplay", "http://192.168.1.256:8123/api/webhook/webhook-light-example-freeplay");
 	cvarManager->registerCvar("ha_mainmenu", "http://192.168.1.256:8123/api/webhook/webhook-light-example-mainmenu");
 	cvarManager->registerCvar("ha_overtime", "http://192.168.1.256:8123/api/webhook/webhook-light-example-overtime");
@@ -63,6 +66,9 @@ void RocketLeagueAssistant::LoadHooks()
 	gameWrapper->HookEvent("Function Engine.Pawn.GetTeam", std::bind(&RocketLeagueAssistant::LoadTeams, this, std::placeholders::_1));
 
 
+	//Goal Scored
+	gameWrapper->HookEvent("Function TAGame.Ball_TA.Explode", std::bind(&RocketLeagueAssistant::GoalScoredHook, this, std::placeholders::_1));
+
 	//Demo Feature
 	gameWrapper->HookEventWithCallerPost<ActorWrapper>("Function TAGame.GFxHUD_TA.HandleStatTickerMessage",
 		[this](ActorWrapper caller, void* params, std::string eventname) {
@@ -78,7 +84,9 @@ void RocketLeagueAssistant::LoadHooks()
 	//On Game Exit
 	gameWrapper->HookEvent("Function ProjectX.GFxShell_X.ExitGame", std::bind(&RocketLeagueAssistant::ExitHook, this, std::placeholders::_1));
 
-
+	//Check if it is a replay
+	gameWrapper->HookEvent("Function GameEvent_Soccar_TA.ReplayPlayback.BeginState", std::bind(&RocketLeagueAssistant::Replay, this, std::placeholders::_1));
+	gameWrapper->HookEvent("Function GameEvent_Soccar_TA.ReplayPlayback.EndState", std::bind(&RocketLeagueAssistant::NotReplay, this, std::placeholders::_1));
 }
 
 void RocketLeagueAssistant::SendCommands(std::string reqUrl)
@@ -105,6 +113,19 @@ void RocketLeagueAssistant::LoadTeams(std::string name)
 	
 	if (!enabled) { LOG("RocketLeagueAssistant is not enabled"); return; }
 	
+	//See if team colors are enabled
+	CVarWrapper teamsEnabledCvar = cvarManager->getCvar("teams_enabled");
+	bool teamsEnabled = teamsEnabledCvar.getBoolValue();
+	if (!teamsEnabled) { LOG("Team color Automations are not enabled"); return; }
+
+	//Check if it is a replay (this is may be temporary to minimize log flooding on Home Assistant)
+
+	CVarWrapper replayCvar = cvarManager->getCvar("isReplay");
+	bool isReplay = replayCvar.getBoolValue();
+	if (isReplay == true) { Log("It's a replay"); return; }
+
+
+
 	//Get player team and primary color
 
 	if (gameWrapper->IsInFreeplay()) {
@@ -121,6 +142,11 @@ void RocketLeagueAssistant::LoadTeams(std::string name)
 	}
 
 	if (!gameWrapper->IsInFreeplay()) {
+
+
+		CVarWrapper replayCvar = cvarManager->getCvar("isReplay");
+		bool isReplay = replayCvar.getBoolValue();
+		if (isReplay == true) { Log("It's a replay"); return; }
 
 		cvarManager->log("Player in game, using team colors");
 
@@ -218,6 +244,7 @@ void RocketLeagueAssistant::ConvertLinearColor(float red, float green, float blu
 
 void RocketLeagueAssistant::DemosHook(void* params)
 {
+
 	//Check if plugin is enabled
 	CVarWrapper enableCvar = cvarManager->getCvar("ha_enabled");
 	bool enabled = enableCvar.getBoolValue();
@@ -229,6 +256,11 @@ void RocketLeagueAssistant::DemosHook(void* params)
 	bool demosEnabled = demosEnabledCvar.getBoolValue();
 	if (!demosEnabled) { LOG("Demos Automations are not enabled"); return; }
 	
+	//See if it is a replay
+	CVarWrapper replayCvar = cvarManager->getCvar("isReplay");
+	bool isReplay = replayCvar.getBoolValue();
+	if (isReplay == true) { Log("It's a replay"); return; }
+
 	//Get demos automation url, transform, and convert to string
 	CVarWrapper haDemosCVar = cvarManager->getCvar("ha_demos");
 	if (!haDemosCVar) { return; }
@@ -268,9 +300,7 @@ void RocketLeagueAssistant::DemosHook(void* params)
 
 		// Compare the primary player to the victim
 		if (playerPRI.memory_address != victim.memory_address) {
-			LOG("Hah you got demoed get good {}", victim.GetPlayerName().ToString());
 			
-
 			SendCommands(reqUrlDemosString);
 
 
@@ -287,6 +317,11 @@ void RocketLeagueAssistant::FreeplayHook()
 
 	if (!enabled) { LOG("RocketLeagueAssistant is not enabled"); return; }
 
+	//Check if it is a replay (this is may be temporary to minimize log flooding on Home Assistant)
+
+	CVarWrapper replayCvar = cvarManager->getCvar("isReplay");
+	bool isReplay = replayCvar.getBoolValue();
+	if (!isReplay) { Log("It's a replay"); return; }
 
 	//May be redundant, but good to check
 
@@ -325,6 +360,36 @@ void RocketLeagueAssistant::MainMenuHook(std::string name)
 
 	LOG("Using Main Menu Hook");
 	SendCommands(reqUrlMainMenuString);
+
+}
+
+void RocketLeagueAssistant::GoalScoredHook(std::string name)
+{
+	//Check if plugin is enabled
+	CVarWrapper enableCvar = cvarManager->getCvar("ha_enabled");
+	bool enabled = enableCvar.getBoolValue();
+
+	if (!enabled) { LOG("RocketLeagueAssistant is not enabled"); return; }
+
+
+	//See if Goal Scored hook is enabled
+	CVarWrapper goalScoredEnabledCvar = cvarManager->getCvar("goalScored_enabled");
+	bool goalScoredEnabled = goalScoredEnabledCvar.getBoolValue();
+	if (!goalScoredEnabled) { LOG("goalScored Automations are not enabled"); return; }
+
+	//See if it is a replay
+	CVarWrapper replayCvar = cvarManager->getCvar("isReplay");
+	bool isReplay = replayCvar.getBoolValue();
+	if (isReplay == true) { Log("It's a replay"); return; }
+
+	//Get Goal Scored automation url, transform, and convert to string
+	CVarWrapper hagoalScoredCVar = cvarManager->getCvar("ha_goalScored");
+	if (!hagoalScoredCVar) { return; }
+	auto reqUrlgoalScored = cvarManager->getCvar("ha_goalScored");
+	std::string reqUrlgoalScoredString = reqUrlgoalScored.getStringValue();
+
+	LOG("Using Goal Scored Hook");
+	SendCommands(reqUrlgoalScoredString);
 
 }
 
@@ -379,6 +444,30 @@ void RocketLeagueAssistant::ExitHook(std::string name)
 	SendCommands(reqUrlExitString);
 	  
 
+
+}
+
+
+void RocketLeagueAssistant::Replay(std::string name)
+{
+	LOG("Replay start");
+	CVarWrapper replayCvar = cvarManager->getCvar("isReplay");
+	bool isReplay = replayCvar.getBoolValue();
+	isReplay = true;
+	LOG("{}", isReplay);
+	replayCvar.setValue(isReplay);
+	
+
+}
+
+void RocketLeagueAssistant::NotReplay(std::string name)
+{
+	LOG("Replay ended");
+	CVarWrapper replayCvar = cvarManager->getCvar("isReplay");
+	bool isReplay = replayCvar.getBoolValue();
+	isReplay = false;
+	LOG("{}", isReplay);
+	replayCvar.setValue(isReplay);
 
 }
 

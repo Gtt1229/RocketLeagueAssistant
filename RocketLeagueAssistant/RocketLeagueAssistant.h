@@ -26,7 +26,10 @@ public:
 	void FreeplayHook();
 	void MainMenuHook(std::string name);
 	void OvertimeHook(std::string name);
+	void GoalScoredHook(std::string name);
 	void ExitHook(std::string name);
+	void Replay(std::string name);
+	void NotReplay(std::string name);
 
 	void SendCommands(std::string reqUrl);
 
