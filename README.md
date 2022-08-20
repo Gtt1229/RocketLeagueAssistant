@@ -13,7 +13,7 @@ And some other person named Josh
 # Home Assistant Configuration
 The plugin utilizes Home Assistant's built in Webhook automation trigger. Currently, the plugin is only designed to be used with HTTP. _The skeleton for HTTPS and its token are already in place._
 
-There are 2 automations to create: One for **Blue**, one for **Orange**. _Custom RGB Values may be added in the future, the skeleton is already in the code_
+There are a few automations to create:
 
 ## HA Scenes Configuration:
 
@@ -28,8 +28,6 @@ There are 2 automations to create: One for **Blue**, one for **Orange**. _Custom
 [**More on scene creation here**](https://www.home-assistant.io/integrations/scene/)
 
 ## HA Webhooks Configuration:
-
-### The plugin currently has _-blue_ and _-orange_ hard-coded into it, so please follow carefully.
 
 1. Create a new automation
 2. Give it a name (**I suggest not adding a name in the title until after the Webhook ID generation**) and set the trigger type to Webhook:
