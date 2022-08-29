@@ -31,13 +31,13 @@ void RocketLeagueAssistant::onLoad()
 	cvarManager->registerCvar("ha_home", "http://192.168.1.256:8123/api/webhook/webhook-light-example-home");
 	cvarManager->registerCvar("ha_away", "http://192.168.1.256:8123/api/webhook/webhook-light-example-away");
 	cvarManager->registerCvar("ha_demos", "http://192.168.1.256:8123/api/webhook/webhook-light-example-demos");
-	cvarManager->registerCvar("ha_goalScored", "http://192.168.1.256:8123/api/webhook/webhook-light-example-goalscored");
+	//cvarManager->registerCvar("ha_goalScored", "http://192.168.1.256:8123/api/webhook/webhook-light-example-goalscored");
 	cvarManager->registerCvar("ha_freeplay", "http://192.168.1.256:8123/api/webhook/webhook-light-example-freeplay");
 	cvarManager->registerCvar("ha_mainmenu", "http://192.168.1.256:8123/api/webhook/webhook-light-example-mainmenu");
 	cvarManager->registerCvar("ha_overtime", "http://192.168.1.256:8123/api/webhook/webhook-light-example-overtime");
 	cvarManager->registerCvar("ha_exit", "http://192.168.1.256:8123/api/webhook/webhook-light-example-exit");
-	cvarManager->registerCvar("ha_goalHome", "http://192.168.1.256:8123/api/webhook/webhook-light-example-exit");
-	cvarManager->registerCvar("ha_goalAway", "http://192.168.1.256:8123/api/webhook/webhook-light-example-exit");
+	cvarManager->registerCvar("ha_goalHome", "http://192.168.1.256:8123/api/webhook/webhook-light-example-homegoal");
+	cvarManager->registerCvar("ha_goalAway", "http://192.168.1.256:8123/api/webhook/webhook-light-example-awaygoal");
 
 	//Team CVAR
 	cvarManager->registerCvar("ha_playersTeam", "2");
@@ -344,6 +344,17 @@ void RocketLeagueAssistant::StatsHook(void* params)
 	//
 	LOG("StateEventOccured");
 	if (statEvent.GetEventName() == "Goal") {
+
+		//See if Goal Scored hook is enabled
+		CVarWrapper goalScoredEnabledCvar = cvarManager->getCvar("goalScored_enabled");
+		bool goalScoredEnabled = goalScoredEnabledCvar.getBoolValue();
+		if (!goalScoredEnabled) { LOG("goalScored Automations are not enabled"); return; }
+	
+		//See if it is a replay
+		CVarWrapper replayCvar = cvarManager->getCvar("isReplay");
+		bool isReplay = replayCvar.getBoolValue();
+		if (isReplay == true) { Log("It's a replay"); return; }
+
 		int tmpCounter = 0;
 		int lastGoalScoredBy = receiver.GetTeamNum();
 
@@ -352,11 +363,13 @@ void RocketLeagueAssistant::StatsHook(void* params)
 			if (lastGoalScoredBy == haplayersTeam2) {
 
 				LOG("Your team scored");
+				SendCommands(reqUrlGoalHomeString);
 			}
 
 			if (lastGoalScoredBy != haplayersTeam2) {
 
 				LOG("Other team scored");
+				SendCommands(reqUrlGoalAwayString);
 			}
 
 		}
