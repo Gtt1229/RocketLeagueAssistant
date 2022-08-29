@@ -29,7 +29,8 @@ void RocketLeagueAssistant::RenderSettings() {
 	CVarWrapper haAwayCvargui = cvarManager->getCvar("ha_away");
 
 	CVarWrapper goalScoredEnableCvar = cvarManager->getCvar("goalScored_enabled");
-	CVarWrapper haGoalScoredCvargui = cvarManager->getCvar("ha_goalScored");
+	CVarWrapper haAwayGoalScoredCvargui = cvarManager->getCvar("ha_goalAway");
+	CVarWrapper haHomeGoalScoredCvargui = cvarManager->getCvar("ha_goalHome");
 
 	CVarWrapper mainmenuEnableCvar = cvarManager->getCvar("mainmenu_enabled");
 	CVarWrapper haMainMenuCvargui = cvarManager->getCvar("ha_mainmenu");
@@ -129,14 +130,28 @@ void RocketLeagueAssistant::RenderSettings() {
 
 		if (goalScoredEnabled == true) {
 
-			if (!haGoalScoredCvargui) { return; }
-			std::string reqgoalScoredUrlex = haGoalScoredCvargui.getStringValue();
+			if (!haHomeGoalScoredCvargui) { return; }
+			std::string reqhomeGoalUrlex = haHomeGoalScoredCvargui.getStringValue();
 
-			if (ImGui::InputText("Home Assistant Web Hook URL For Goals", &reqgoalScoredUrlex)) {
+			if (ImGui::InputText("Home Assistant Web Hook URL for Your Team Scored", &reqhomeGoalUrlex)) {
 
-				haGoalScoredCvargui.setValue(reqgoalScoredUrlex);
+				haHomeGoalScoredCvargui.setValue(reqhomeGoalUrlex);
 
 			}
+
+
+			if (!haAwayGoalScoredCvargui) { return; }
+			std::string reqawayGoalUrlex = haAwayGoalScoredCvargui.getStringValue();
+
+
+			//char const* currentUrl = reqawayUrlex.data();
+
+			if (ImGui::InputText("Home Assistant Web Hook URL For Other Team Scored", &reqawayGoalUrlex)) {
+
+				haAwayGoalScoredCvargui.setValue(reqawayGoalUrlex);
+
+			}
+
 		}
 
 		//Demos hook Gui

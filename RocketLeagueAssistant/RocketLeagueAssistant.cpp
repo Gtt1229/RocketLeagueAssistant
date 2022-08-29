@@ -31,11 +31,16 @@ void RocketLeagueAssistant::onLoad()
 	cvarManager->registerCvar("ha_home", "http://192.168.1.256:8123/api/webhook/webhook-light-example-home");
 	cvarManager->registerCvar("ha_away", "http://192.168.1.256:8123/api/webhook/webhook-light-example-away");
 	cvarManager->registerCvar("ha_demos", "http://192.168.1.256:8123/api/webhook/webhook-light-example-demos");
-	cvarManager->registerCvar("ha_goalScored", "http://192.168.1.256:8123/api/webhook/webhook-light-example-goalscored");
+	//cvarManager->registerCvar("ha_goalScored", "http://192.168.1.256:8123/api/webhook/webhook-light-example-goalscored");
 	cvarManager->registerCvar("ha_freeplay", "http://192.168.1.256:8123/api/webhook/webhook-light-example-freeplay");
 	cvarManager->registerCvar("ha_mainmenu", "http://192.168.1.256:8123/api/webhook/webhook-light-example-mainmenu");
 	cvarManager->registerCvar("ha_overtime", "http://192.168.1.256:8123/api/webhook/webhook-light-example-overtime");
 	cvarManager->registerCvar("ha_exit", "http://192.168.1.256:8123/api/webhook/webhook-light-example-exit");
+	cvarManager->registerCvar("ha_goalHome", "http://192.168.1.256:8123/api/webhook/webhook-light-example-homegoal");
+	cvarManager->registerCvar("ha_goalAway", "http://192.168.1.256:8123/api/webhook/webhook-light-example-awaygoal");
+
+	//Team CVAR
+	cvarManager->registerCvar("ha_playersTeam", "2");
 
 	//Prep for possibly using tokens in the future for requests over https
 	cvarManager->registerCvar("ha_token", "Generated Token", "Home Assistant URL");
@@ -49,7 +54,7 @@ void RocketLeagueAssistant::onLoad()
 
 	_globalCvarManager = cvarManager;
 	
-
+	
 }
 
 void RocketLeagueAssistant::onUnload()
@@ -67,12 +72,12 @@ void RocketLeagueAssistant::LoadHooks()
 
 
 	//Goal Scored
-	gameWrapper->HookEvent("Function TAGame.Ball_TA.Explode", std::bind(&RocketLeagueAssistant::GoalScoredHook, this, std::placeholders::_1));
+	//gameWrapper->HookEvent("Function TAGame.Ball_TA.Explode", std::bind(&RocketLeagueAssistant::GoalScoredHook, this, std::placeholders::_1));
 
-	//Demo Feature
+	//Stats Feature
 	gameWrapper->HookEventWithCallerPost<ActorWrapper>("Function TAGame.GFxHUD_TA.HandleStatTickerMessage",
 		[this](ActorWrapper caller, void* params, std::string eventname) {
-			DemosHook(params);
+			StatsHook(params);
 		});
 
 	//Overtime
@@ -87,7 +92,24 @@ void RocketLeagueAssistant::LoadHooks()
 	//Check if it is a replay
 	gameWrapper->HookEvent("Function GameEvent_Soccar_TA.ReplayPlayback.BeginState", std::bind(&RocketLeagueAssistant::Replay, this, std::placeholders::_1));
 	gameWrapper->HookEvent("Function GameEvent_Soccar_TA.ReplayPlayback.EndState", std::bind(&RocketLeagueAssistant::NotReplay, this, std::placeholders::_1));
+
+	
+	
+
+
+	
+	//Goal Scored Hook Test
+	
+	
+	
+
+	//gameWrapper->HookEventWithCallerPost<ServerWrapper>(
+	//	"Function TAGame.GFxHUD_TA.HandleStatTickerMessage",
+	//	std::bind(&RocketLeagueAssistant::GoalScoredTest, this,
+	//		std::placeholders::_1, std::placeholders::_2));
+
 }
+
 
 void RocketLeagueAssistant::SendCommands(std::string reqUrl)
 {
@@ -182,32 +204,40 @@ void RocketLeagueAssistant::LoadTeams(std::string name)
 		if (!haHomeCVar) { return; }
 		CVarWrapper haAwayCVar = cvarManager->getCvar("ha_away");
 		if (!haAwayCVar) { return; }
+		
+		//get current team cvar
+		CVarWrapper ha_playersTeam = cvarManager->getCvar("ha_playersTeam");
+		if (!ha_playersTeam) { return; }
 		//
 
 		//this may be redundant?
 		auto reqUrlHome = cvarManager->getCvar("ha_home");
 		auto reqUrlAway = cvarManager->getCvar("ha_away");
+
 		//
 
 		//convert haurlcvars to string
 		std::string reqUrlHomeString = reqUrlHome.getStringValue();
 		std::string reqUrlAwayString = reqUrlAway.getStringValue();
-		//
 
 		//Send based on home or away team
 		if (teamnum <= 1) {
 
 			if (teamnum == 0) {
 
+
 				std::string reqUrlTeam = reqUrlHomeString;
 				SendCommands(reqUrlTeam);
+				ha_playersTeam.setValue(teamnum);
 				LOG("Using Home Team Colors");
+
 			}   
 
 			if (teamnum == 1) {
 
 				std::string reqUrlTeam = reqUrlAwayString;
 				SendCommands(reqUrlTeam);
+				ha_playersTeam.setValue(teamnum);
 				LOG("Using Away Team Colors");
 			}
 
@@ -242,7 +272,7 @@ void RocketLeagueAssistant::ConvertLinearColor(float red, float green, float blu
 }
 
 
-void RocketLeagueAssistant::DemosHook(void* params)
+void RocketLeagueAssistant::StatsHook(void* params)
 {
 
 	//Check if plugin is enabled
@@ -254,12 +284,41 @@ void RocketLeagueAssistant::DemosHook(void* params)
 	//See if demos are enabled
 	CVarWrapper demosEnabledCvar = cvarManager->getCvar("demos_enabled");
 	bool demosEnabled = demosEnabledCvar.getBoolValue();
-	if (!demosEnabled) { LOG("Demos Automations are not enabled"); return; }
+	//if (!demosEnabled) { LOG("Demos Automations are not enabled"); return; }
 	
 	//See if it is a replay
 	CVarWrapper replayCvar = cvarManager->getCvar("isReplay");
 	bool isReplay = replayCvar.getBoolValue();
 	if (isReplay == true) { Log("It's a replay"); return; }
+
+
+	//Get goals automation url, transform, and convert to string
+	CVarWrapper haGoalHomeCVar = cvarManager->getCvar("ha_goalHome");
+	if (!haGoalHomeCVar) { return; }
+	CVarWrapper haGoalAwayCVar = cvarManager->getCvar("ha_goalAway");
+	if (!haGoalAwayCVar) { return; }
+	//
+
+	//Current team CVAR
+	//get current team cvar
+	CVarWrapper ha_playersTeam = cvarManager->getCvar("ha_playersTeam");
+	if (!ha_playersTeam) { return; }
+	//
+	auto haplayersTeam = cvarManager->getCvar("ha_playersTeam");
+	int haplayersTeam2 = haplayersTeam.getIntValue();
+
+	//convert team to int
+	//int haplayersTeam = ha_playersTeam.getIntValue();
+	//
+	//
+	//this may be redundant?
+	auto reqGoalUrlHome = cvarManager->getCvar("ha_goalHome");
+	auto reqGoalUrlAway = cvarManager->getCvar("ha_goalAway");
+	//
+
+	//convert haurlcvars to string
+	std::string reqUrlGoalHomeString = reqGoalUrlHome.getStringValue();
+	std::string reqUrlGoalAwayString = reqGoalUrlAway.getStringValue();
 
 	//Get demos automation url, transform, and convert to string
 	CVarWrapper haDemosCVar = cvarManager->getCvar("ha_demos");
@@ -267,12 +326,14 @@ void RocketLeagueAssistant::DemosHook(void* params)
 	auto reqUrlDemos = cvarManager->getCvar("ha_demos");
 	std::string reqUrlDemosString = reqUrlDemos.getStringValue();
 
-	//Get a demo's info
+	//Get a StatEvent's info
 	struct StatTickerParams {
 		uintptr_t Receiver;
 		uintptr_t Victim;
 		uintptr_t StatEvent;
 	};
+
+
 
 	StatTickerParams* pStruct = (StatTickerParams*)params;
 	PriWrapper receiver = PriWrapper(pStruct->Receiver);
@@ -281,8 +342,42 @@ void RocketLeagueAssistant::DemosHook(void* params)
 	StatEventWrapper statEvent = StatEventWrapper(pStruct->StatEvent);
 
 	//
+	LOG("StateEventOccured");
+	if (statEvent.GetEventName() == "Goal") {
+
+		//See if Goal Scored hook is enabled
+		CVarWrapper goalScoredEnabledCvar = cvarManager->getCvar("goalScored_enabled");
+		bool goalScoredEnabled = goalScoredEnabledCvar.getBoolValue();
+		if (!goalScoredEnabled) { LOG("goalScored Automations are not enabled"); return; }
+	
+		//See if it is a replay
+		CVarWrapper replayCvar = cvarManager->getCvar("isReplay");
+		bool isReplay = replayCvar.getBoolValue();
+		if (isReplay == true) { Log("It's a replay"); return; }
+
+		int tmpCounter = 0;
+		int lastGoalScoredBy = receiver.GetTeamNum();
+
+		if (lastGoalScoredBy <= 1) {
+
+			if (lastGoalScoredBy == haplayersTeam2) {
+
+				LOG("Your team scored");
+				SendCommands(reqUrlGoalHomeString);
+			}
+
+			if (lastGoalScoredBy != haplayersTeam2) {
+
+				LOG("Other team scored");
+				SendCommands(reqUrlGoalAwayString);
+			}
+
+		}
 
 
+
+		LOG("Using Goals Hook", lastGoalScoredBy);
+	}
 	if (statEvent.GetEventName() == "Demolish") {
 		
 		CVarWrapper demosEnabledCvar = cvarManager->getCvar("demos_enabled");
@@ -301,6 +396,7 @@ void RocketLeagueAssistant::DemosHook(void* params)
 		// Compare the primary player to the victim
 		if (playerPRI.memory_address != victim.memory_address) {
 			
+			LOG("Using Demos Hook");
 			SendCommands(reqUrlDemosString);
 
 
@@ -317,11 +413,11 @@ void RocketLeagueAssistant::FreeplayHook()
 
 	if (!enabled) { LOG("RocketLeagueAssistant is not enabled"); return; }
 
-	//Check if it is a replay (this is may be temporary to minimize log flooding on Home Assistant)
+	////Check if it is a replay (this is may be temporary to minimize log flooding on Home Assistant)
 
-	CVarWrapper replayCvar = cvarManager->getCvar("isReplay");
-	bool isReplay = replayCvar.getBoolValue();
-	if (!isReplay) { Log("It's a replay"); return; }
+	//CVarWrapper replayCvar = cvarManager->getCvar("isReplay");
+	//bool isReplay = replayCvar.getBoolValue();
+	//if (!isReplay) { Log("It's a replay"); return; }
 
 	//May be redundant, but good to check
 
@@ -363,35 +459,35 @@ void RocketLeagueAssistant::MainMenuHook(std::string name)
 
 }
 
-void RocketLeagueAssistant::GoalScoredHook(std::string name)
-{
-	//Check if plugin is enabled
-	CVarWrapper enableCvar = cvarManager->getCvar("ha_enabled");
-	bool enabled = enableCvar.getBoolValue();
-
-	if (!enabled) { LOG("RocketLeagueAssistant is not enabled"); return; }
-
-
-	//See if Goal Scored hook is enabled
-	CVarWrapper goalScoredEnabledCvar = cvarManager->getCvar("goalScored_enabled");
-	bool goalScoredEnabled = goalScoredEnabledCvar.getBoolValue();
-	if (!goalScoredEnabled) { LOG("goalScored Automations are not enabled"); return; }
-
-	//See if it is a replay
-	CVarWrapper replayCvar = cvarManager->getCvar("isReplay");
-	bool isReplay = replayCvar.getBoolValue();
-	if (isReplay == true) { Log("It's a replay"); return; }
-
-	//Get Goal Scored automation url, transform, and convert to string
-	CVarWrapper hagoalScoredCVar = cvarManager->getCvar("ha_goalScored");
-	if (!hagoalScoredCVar) { return; }
-	auto reqUrlgoalScored = cvarManager->getCvar("ha_goalScored");
-	std::string reqUrlgoalScoredString = reqUrlgoalScored.getStringValue();
-
-	LOG("Using Goal Scored Hook");
-	SendCommands(reqUrlgoalScoredString);
-
-}
+//void RocketLeagueAssistant::GoalScoredHook(std::string name)
+//{
+//	//Check if plugin is enabled
+//	CVarWrapper enableCvar = cvarManager->getCvar("ha_enabled");
+//	bool enabled = enableCvar.getBoolValue();
+//
+//	if (!enabled) { LOG("RocketLeagueAssistant is not enabled"); return; }
+//
+//
+//	//See if Goal Scored hook is enabled
+//	CVarWrapper goalScoredEnabledCvar = cvarManager->getCvar("goalScored_enabled");
+//	bool goalScoredEnabled = goalScoredEnabledCvar.getBoolValue();
+//	if (!goalScoredEnabled) { LOG("goalScored Automations are not enabled"); return; }
+//
+//	//See if it is a replay
+//	CVarWrapper replayCvar = cvarManager->getCvar("isReplay");
+//	bool isReplay = replayCvar.getBoolValue();
+//	if (isReplay == true) { Log("It's a replay"); return; }
+//
+//	//Get Goal Scored automation url, transform, and convert to string
+//	CVarWrapper hagoalScoredCVar = cvarManager->getCvar("ha_goalScored");
+//	if (!hagoalScoredCVar) { return; }
+//	auto reqUrlgoalScored = cvarManager->getCvar("ha_goalScored");
+//	std::string reqUrlgoalScoredString = reqUrlgoalScored.getStringValue();
+//
+//	LOG("Using Goal Scored Hook");
+//	SendCommands(reqUrlgoalScoredString);
+//
+//}
 
 void RocketLeagueAssistant::OvertimeHook(std::string name)
 {
