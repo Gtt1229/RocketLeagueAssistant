@@ -22,11 +22,11 @@ public:
 	void LoadHooks();
 	void LoadTeams(std::string name);
 	void ConvertLinearColor(float red, float green, float blue);
-	void DemosHook(void* params);
+	void StatsHook(void* params);
 	void FreeplayHook();
 	void MainMenuHook(std::string name);
 	void OvertimeHook(std::string name);
-	void GoalScoredHook(std::string name);
+	//void GoalScoredHook(std::string name);
 	void ExitHook(std::string name);
 	void Replay(std::string name);
 	void NotReplay(std::string name);
