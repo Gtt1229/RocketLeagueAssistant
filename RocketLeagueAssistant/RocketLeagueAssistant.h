@@ -6,6 +6,7 @@
 
 
 #include "version.h"
+#include "pch.h"
 constexpr auto plugin_version = stringify(VERSION_MAJOR) "." stringify(VERSION_MINOR) "." stringify(VERSION_PATCH) "." stringify(VERSION_BUILD);
 
 
@@ -21,8 +22,9 @@ public:
 	//Custom methods
 	void LoadHooks();
 	void LoadTeams(std::string name);
-	void ConvertLinearColor(float red, float green, float blue);
+	std::string ConvertLinearColor(float red, float green, float blue);
 	void StatsHook(void* params);
+	void ChatHook(void* params);
 	void FreeplayHook();
 	void MainMenuHook(std::string name);
 	void OvertimeHook(std::string name);
@@ -30,8 +32,10 @@ public:
 	void ExitHook(std::string name);
 	void Replay(std::string name);
 	void NotReplay(std::string name);
-
-	void SendCommands(std::string reqUrl);
+	void SendCommands(std::string reqUrl, std::string event);
+	std::string GenWebHook();
+	std::string GenAutomationID();
+	void CreateAutomation(std::string webhookURL, std::string automationID);
 
 
 	//GUI

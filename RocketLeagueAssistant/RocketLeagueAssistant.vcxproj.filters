@@ -75,6 +75,15 @@
     <ClCompile Include="imgui_stdlib.cpp">
       <Filter>imgui\implementation</Filter>
     </ClCompile>
+    <ClCompile Include="SendCommands.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RandomAlphaNumeric.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CreateAutomationBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RocketLeagueAssistant.h">

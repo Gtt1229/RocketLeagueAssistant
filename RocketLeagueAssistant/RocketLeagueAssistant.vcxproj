@@ -50,6 +50,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)plugins\</OutDir>
     <IntDir>$(SolutionDir)build\.intermediates\$(Configuration)\</IntDir>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -79,7 +80,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir)fmt\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)fmt\include;%(AdditionalIncludeDirectories),$(ProjectDir)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -90,6 +91,9 @@
     <PreBuildEvent>
       <Command>powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -File update_version.ps1 "./version.h"</Command>
     </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>"$(BakkesModPath)\bakkesmodsdk\bakkesmod-patch.exe" "$(TargetPath)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="fmt\src\format.cc" />
@@ -112,6 +116,9 @@
     <ClCompile Include="RocketLeagueAssistant.cpp" />
     <ClCompile Include="RocketLeagueAssistantGUI.cpp" />
     <ClCompile Include="imgui_stdlib.cpp" />
+    <ClCompile Include="SendCommands.cpp" />
+    <ClCompile Include="RandomAlphaNumeric.cpp" />
+    <ClCompile Include="CreateAutomationBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui_stdlib.h" />
