@@ -12,6 +12,16 @@
 #include <functional> //for std::function
 #include <algorithm>  //for std::generate_n
 
+//
+// 
+// 
+// This creates the random string for the Webhook ID and Automation ID when created using the plugin.
+//  
+// 
+//
+
+
+
 typedef std::vector<char> char_array;
 
 std::string random_string()
@@ -23,7 +33,7 @@ std::string random_string()
 
     std::shuffle(str.begin(), str.end(), generator);
 
-    return str.substr(0, 32);    // assumes 32 < number of characters in str         
+    return str.substr(0, 32);             
 }
 
 std::string random_number()
@@ -35,7 +45,7 @@ std::string random_number()
 
     std::shuffle(str.begin(), str.end(), generator);
 
-    return str.substr(0, 13);    // assumes 32 < number of characters in str         
+    return str.substr(0, 13);             
 }
 
 std::string RocketLeagueAssistant::GenWebHook() {

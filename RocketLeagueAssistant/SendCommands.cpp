@@ -32,11 +32,12 @@ void RocketLeagueAssistant::SendCommands(std::string reqUrl, std::string event)
 	std::string OtherTeamPrimaryRGBColorString = OtherTeamPrimaryRGBColor.getStringValue();
 	LOG("Other Team's Color: {}", OtherTeamPrimaryRGBColorString);
 
+	//JSON formatting
 	CurlRequest req;
 	std::string dataVar = "{\"data\" :";
 	std::string both = dataVar + " \"" + event + "\"}";
 	std::string colorJson;
-	colorJson = ", \"teamColor\" : [{" + myTeamPrimaryRGBColorString + "},{" + OtherTeamPrimaryRGBColorString + "}]}";
+	colorJson = ", \"teamColor\" : [{" + myTeamPrimaryRGBColorString + "},{" + OtherTeamPrimaryRGBColorString + "}]}"; //sends team's colors
 	both = dataVar + "\"" + event + "\"" + colorJson;
 	LOG("Sent:{}", both);
 

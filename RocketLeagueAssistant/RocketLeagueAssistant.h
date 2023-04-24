@@ -24,7 +24,7 @@ public:
 	void LoadTeams(std::string name);
 	std::string ConvertLinearColor(float red, float green, float blue);
 	void StatsHook(void* params);
-	void ChatHook(void* params);
+	//void ChatHook(void* params);
 	void FreeplayHook();
 	void MainMenuHook(std::string name);
 	void OvertimeHook(std::string name);
@@ -36,6 +36,8 @@ public:
 	std::string GenWebHook();
 	std::string GenAutomationID();
 	void CreateAutomation(std::string webhookURL, std::string automationID);
+	void UpdateModal();
+	void modalClosed(std::string name);
 
 
 	//GUI
@@ -60,7 +62,7 @@ private:
 	
 
 	// Inherited via PluginSettingsWindow
-	/* 
+	/*
 	void RenderSettings() override;
 	std::string GetPluginName() override;
 	void SetImGuiContext(uintptr_t ctx) override;
