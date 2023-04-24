@@ -3,8 +3,6 @@ BakkesMod Plugin to integrate Rocket League events with Home Assistant
 
 ## Discord: https://discord.gg/8bNkhCmQXe
 
-**These automations can be designed to control more things than just lights**
-
 ![RLHAbanner](https://user-images.githubusercontent.com/23534272/175837042-8db1aea4-214a-4e69-92ab-2c4c705ffeda.png)
 
 ## ⭐Special thanks to those in the Discord and notably [Branky](https://github.com/ItsBranK) and [JerryTheBee](https://github.com/ubelhj)⭐
