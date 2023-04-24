@@ -51,13 +51,13 @@ The plugin utilizes Home Assistant's built in Webhook automation trigger with JS
 2. **Use the Template Generator in the plugin's setting window**:
 
 
-   a. Press F2 in-game "Plugins" tab -> "RocketLeagueAssistant"
+   a. Press F2 in-game `Plugins` tab -> `RocketLeagueAssistant`
    
-   b. Expand "Automation Template Generator"
+   b. Expand `Automation Template Generator`
    
    c. Populate your Home Assistant URL and Token generated in step 1
    
-   d. Click "Generate Automation Base Template". Your "Home Assistant Web Hook Global URL" field will be automatically populated with the appropiate URL for Home Assistant. 
+   d. Click `Generate Automation Base Template`. Your *Home Assistant Web Hook Global URL* field will be automatically populated with the appropiate URL for Home Assistant. 
     
    ***The token will be automatically erased from the plugin and config file for security reasons. It is suggested to also delete the token from Home Assistant after, so your token can not be used.***
 
@@ -66,7 +66,7 @@ The plugin utilizes Home Assistant's built in Webhook automation trigger with JS
    ![RLAGenerateAutomation](https://user-images.githubusercontent.com/23534272/234132236-41fd50aa-6467-49c1-b320-dde76c58b682.png)
 
 
- You should now have an automation called "RocketLeague - BakkesGenerated" in Home Assistant
+ You should now have an automation called ***RocketLeague - BakkesGenerated*** in Home Assistant
 
 3. **Populate each condition with the action corresponding with its condition**:
 
@@ -75,9 +75,9 @@ The plugin utilizes Home Assistant's built in Webhook automation trigger with JS
 
 4. **The color values from the JSON request can be used as the colors for your automations**:
 	
-	a. Select "Call a service" as your action then edit in YAML.
+	a. Select **Call a service** as your action then edit in YAML.
 	
-	This will set the color of your lights to the values of your team's primary color. Populate "LIGHTNAMEHERE" with corresponding entity ID:
+	This will set the color of your lights to the values of your team's primary color. Populate "LIGHTNAMEHERE" with the corresponding entity ID:
 
 ```
 service: light.turn_on
@@ -100,7 +100,7 @@ enabled: true
 ### Option 2 - Create a new automation using the [**RocketLeague-BakkesBase.yaml**](RocketLeague-BakkesBase.yaml) file.
 
 1. Create a new automation
-2. Select edit in YAML
+2. Select **Edit in YAML**
 3. Paste the contents of [RocketLeague-BakkesBase.yaml](RocketLeague-BakkesBase.yaml)
 4. Edit the actions respectively as shown in Option 1
 
