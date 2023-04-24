@@ -11,65 +11,96 @@ BakkesMod Plugin to integrate Rocket League events with Home Assistant
 And some other person named Josh
 
 # Home Assistant Configuration
-The plugin utilizes Home Assistant's built in Webhook automation trigger. Currently, the plugin is only designed to be used with HTTP. _The skeleton for HTTPS and its token are already in place._
+The plugin utilizes Home Assistant's built in Webhook automation trigger with JSON-based conditions.
 
-There are a few automations to create:
-
-## HA Scenes Configuration:
+## (Not Required) HA Scenes Configuration:
 
 1. Create a new scene corresponding to the scenario (Home Team, Away Team, Demos, etc)
 2. Give it a name (and icon/area if you'd like)
 3. Add entities/devices to the scene and adjust the colors accordingly
 4. Save the scene
 5. Create a new, or duplicate the scene.
-6. Adjust entities/devices colors respectively.
+6. Add entities/devices to the scene and adjust the colors accordingly.
 7. Save the scene
+8. Repeat
 
 [**More on scene creation here**](https://www.home-assistant.io/integrations/scene/)
 
 ## HA Webhooks Configuration:
 
+### Option 1 - Generate the base automation using the in-game plugin settings window
+
+1. Generate a _Long-Lived Access Token_ in Home Assistant:
+
+   a. Click your username in the bottom left of the Home Assistant web interface
+   
+   b. Scroll to the bottom under "Long-Lived Access Tokens" and click "Create Token"
+   
+   c. Give the token a name and press "Ok"
+   
+   d. Copy the token string. *It is best to click into the text box and press CTRL-A to select all, and then CTRL-C to copy the selected text*
+	
+	![image](https://user-images.githubusercontent.com/23534272/234130854-5aafac64-c6b8-47bc-ab5d-90625b864032.png)
+    
+	![image](https://user-images.githubusercontent.com/23534272/234130913-ce4de667-c4f3-452b-8b1e-2f70fc499f34.png)
+	
+You will now have a token similar to this: ```eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI5NTgxMmNlMWIyYmI0OTRhYTIzN2U0NjNiOTIwMmU5MSIsImlhdCI6MTY4MjM2NzE2OSwiZXhwIjoxOTk3NzI3MTY5fQ.9gdUfsDoYXyTPtqi4vIZ0vuRPFZ-fUrSum_4BxEGzcw```
+   ***You may want to temporarily paste the code into Notepad or the URL bar***
+
+2. Use the Template Generator in the plugin's setting window:
+
+
+   a. Press F2 in-game "Plugins" tab -> "RocketLeagueAssistant"
+   
+   b. Expand "Automation Template Generator"
+   
+   c. Populate your Home Assistant URL and Token generated in step 1
+   
+   d. Click "Generate Automation Base Template". Your "Home Assistant Web Hook Global URL" field will be automatically populated with the appropiate URL for Home Assistant. 
+    
+   ***The token will be automatically erased from the plugin and config file for security reasons. It is suggested to also delete the token from Home Assistant after, so your token can not be used.***
+
+   The plugin configuration is done.
+    
+![rlgenerateautomation](https://user-images.githubusercontent.com/23534272/234132236-41fd50aa-6467-49c1-b320-dde76c58b682.png)
+
+
+You should now have an automation called "RocketLeague - BakkesGenerated" in Home Assistant
+
+3. Populate each condition with the action corresponding with its condition:
+
+   ![image](https://user-images.githubusercontent.com/23534272/234131005-bc842736-7ef7-4704-ac5e-f133c3adb462.png)
+
+
+4. The color values from the JSON request can be used as the colors for your automations:
+	a. As your action, select "Call a service" then edit in YAML.
+	
+	This will set the color of your lights to the values of your team's primary color. Populate "LIGHTNAMEHERE" with corresponding entity ID:
+
+```
+service: light.turn_on
+data:
+  rgb_color:
+    - "{{ trigger.json.teamColor[0].r |int }}"
+    - "{{ trigger.json.teamColor[0].g |int }}"
+    - "{{ trigger.json.teamColor[0].B |int }}"
+target:
+  entity_id: light.LIGHTNAMEHERE
+enabled: true
+```
+
+![image](https://user-images.githubusercontent.com/23534272/234131035-115831c2-e365-44be-be14-7884b1da742b.png)
+
+	
+	
+[**More on automations here**](https://www.home-assistant.io/docs/automation/)	
+
+### Option 2 - Create a new automation using the [**RocketLeague-BakkesBase.yaml**](RocketLeague-BakkesBase.yaml) file.
+
 1. Create a new automation
-2. Give it a name (**I suggest not adding a name in the title until after the Webhook ID generation**) and set the trigger type to Webhook:
-
-![image](https://user-images.githubusercontent.com/23534272/175829533-10634472-95e6-48e1-956b-5103fc7ed7c4.png)
-
-![image](https://user-images.githubusercontent.com/23534272/175829554-36b192cc-59dd-4035-bc3d-d439162c5e32.png)
-
-3. Adjust conditions as needed (Time of day, geolocation, etc, etc)
-4. Change action type to Activate Scene, then select the corresponding scene you've created.
-
-![image](https://user-images.githubusercontent.com/23534272/175829140-a1e1adfe-5acd-4d0f-b1c1-ce12d9406492.png)
-
-5. Save the automation.
-**I like to duplicate the automation and simply append the corresponding function to the Webhook ID, like so:**
-
-![image](https://user-images.githubusercontent.com/23534272/176255055-91793bad-895b-497c-8c97-74185d8a37e3.png)
-![image](https://user-images.githubusercontent.com/23534272/176255115-40801a9a-8ea0-462e-b06d-b9754704ba31.png)
-
-6. Change the scene to be activated by the automation.
-7. Repeat for each color change you'd like to have (Demos, Freeplay, Main Menu, etc)
-
-[**More on automation here**](https://www.home-assistant.io/docs/automation/)
-
-## Plugin Configuration:
-
-1. After plugin is installed, launch Rocket League and press F2
-2. Under the plugin tab, select RocketLeagueAssistant:
-
-![image](https://user-images.githubusercontent.com/23534272/176254969-cc357749-22e5-4fa2-849a-419f3f824d40.png)
-
-3. From Home Assistant, copy the Webhook ID from the corresponding automation and paste it into the setting's correct setting's text box.
-    
-    a.
-  
-    ![image](https://user-images.githubusercontent.com/23534272/175829789-2e6e5c68-185e-4730-bab4-52f24f494593.png)
-    
-    b.
-
-    ![image](https://user-images.githubusercontent.com/23534272/176254104-5f802d3a-0b11-49a7-9853-7d25d9109186.png)
-
-That should do it!
+2. Select edit in YAML
+3. Paste the contents of [RocketLeague-BakkesBase.yaml](RocketLeague-BakkesBase.yaml)
+4. Edit the actions respectively as shown in Option 1
 
 ### Notes
 
@@ -77,6 +108,5 @@ If you manually reload the plugin (through the F6 BakkesMod Console) while in th
 
 ## To Do
 
-* Find a better Function to hook to for running the automation. Currently, the function is called when you switch teams, and when a goal is scored.
-* Finalize RGB support to push to HA bulbs (This may vary on manufacturer, so may a duanting task)
+* More JSON information
 * Probably code clean up and Nullchecks
