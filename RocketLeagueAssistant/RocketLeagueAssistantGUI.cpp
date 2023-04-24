@@ -18,11 +18,16 @@ void RocketLeagueAssistant::SetImGuiContext(uintptr_t ctx) {
 // This will show up in bakkesmod when the plugin is loaded at
 //  f2 -> plugins -> RocketLeagueAssistant
 void RocketLeagueAssistant::RenderSettings() {
-	ImGui::TextUnformatted("RocketLeagueAssistant plugin settings");
+
+
+	//ImGui::TextUnformatted("RocketLeagueAssistant plugin settings JSON BETA");
 
 
 	//Get URL related Cvars
 	CVarWrapper enableCvar = cvarManager->getCvar("ha_enabled");
+	CVarWrapper globalURLEnableCvar = cvarManager->getCvar("globalURL_enabled");
+	CVarWrapper haGlobalURLCvargui = cvarManager->getCvar("ha_globalURL");
+
 
 	CVarWrapper teamsEnableCvar = cvarManager->getCvar("teams_enabled");
 	CVarWrapper haHomeCvargui = cvarManager->getCvar("ha_home");
@@ -47,8 +52,12 @@ void RocketLeagueAssistant::RenderSettings() {
 	CVarWrapper exitEnableCvar = cvarManager->getCvar("exit_enabled");
 	CVarWrapper haExitCvargui = cvarManager->getCvar("ha_exit");
 
+	CVarWrapper jsonEnableCvar = cvarManager->getCvar("jsonEnabled");
+	CVarWrapper haJsonURLCvargui = cvarManager->getCvar("ha_jsonURL");
 
-
+	CVarWrapper haHaBaseURLCvargui = cvarManager->getCvar("ha_haBaseURL");
+	CVarWrapper hideURLCvar = cvarManager->getCvar("hideURL");
+	
 
 	if (!enableCvar) { return; }
 	if (!teamsEnableCvar) { return; }
@@ -57,12 +66,13 @@ void RocketLeagueAssistant::RenderSettings() {
 	if (!demosEnableCvar) { return; }
 	if (!freeplayEnableCvar) { return; }
 	if (!mainmenuEnableCvar) { return; }
+	if (!jsonEnableCvar) { return; }
 
 
 
 
 	bool enabled = enableCvar.getBoolValue();
-
+	bool hideURL = hideURLCvar.getBoolValue();
 	//Enable plugin checkbox
 
 	if (ImGui::Checkbox("Enable plugin", &enabled)) {
@@ -72,17 +82,74 @@ void RocketLeagueAssistant::RenderSettings() {
 		ImGui::SetTooltip("Toggle Plugin");
 	}
 
+	//Enable JSON checkbox
 
-	
+
+
 	//char const* currentUrl = reqhomeUrlex.data();
 
 	if (enabled == true) {
 
-		//Team color hook Gui
+		bool jsonEnabled = jsonEnableCvar.getBoolValue();
 
+		if (ImGui::Checkbox("Use JSON for Home Assistant communications", &jsonEnabled)) {
+			jsonEnableCvar.setValue(jsonEnabled);
+		}
+		if (ImGui::IsItemHovered()) {
+			ImGui::SetTooltip("Toggle JSON support");
+		}
+		if (jsonEnabled == true) {
+			
+			if (!haJsonURLCvargui) { return; }
+			std::string jsonUrlex = haJsonURLCvargui.getStringValue();
+			ImGui::PushItemWidth(33.0 * ImGui::GetFontSize());
+			
+			if (hideURL == false) {
+				if (ImGui::InputText("Home Assistant Web Hook Global URL", &jsonUrlex)) {
+
+					haJsonURLCvargui.setValue(jsonUrlex);
+
+				}
+			}
+		}
+
+
+
+		//Globabl URL hook Gui
+
+		bool globalURLEnabled = globalURLEnableCvar.getBoolValue();
+		if (jsonEnabled != true) {
+			if (ImGui::Checkbox("Enable Global URL for Webhook", &globalURLEnabled)) {
+				globalURLEnableCvar.setValue(globalURLEnabled);
+			}
+			if (ImGui::IsItemHovered()) {
+				ImGui::SetTooltip("Toggle Globabl URL for Webhook");
+			}
+
+
+
+			if (globalURLEnabled == true) {
+
+				if (!haGlobalURLCvargui) { return; }
+				std::string globalUrlex = haGlobalURLCvargui.getStringValue();
+				ImGui::PushItemWidth(33.0 * ImGui::GetFontSize());
+				if (ImGui::InputText("Home Assistant Web Hook Automation URL", &globalUrlex)) {
+
+					haGlobalURLCvargui.setValue(globalUrlex);
+					
+				}
+
+			
+			}
+
+		}
+		ImGui::Spacing();
+		ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal);
+		ImGui::PushItemWidth(33.0 * ImGui::GetFontSize());
+		//Team color hook Gui
 		bool teamsEnabled = teamsEnableCvar.getBoolValue();
 
-				
+
 		if (ImGui::Checkbox("Enable Team Colors Webhook", &teamsEnabled)) {
 			teamsEnableCvar.setValue(teamsEnabled);
 		}
@@ -90,32 +157,33 @@ void RocketLeagueAssistant::RenderSettings() {
 			ImGui::SetTooltip("Toggle Webhook");
 		}
 
+		if (jsonEnabled != true) {
+			if (teamsEnabled == true) {
+				if (globalURLEnabled != true) {
+					if (!haHomeCvargui) { return; }
+					std::string reqhomeUrlex = haHomeCvargui.getStringValue();
+					
+					if (ImGui::InputText("Home Assistant Web Hook URL for Home Team (Blue)", &reqhomeUrlex)) {
 
-		if (teamsEnabled == true) {
+						haHomeCvargui.setValue(reqhomeUrlex);
 
-			if (!haHomeCvargui) { return; }
-			std::string reqhomeUrlex = haHomeCvargui.getStringValue();
-
-			if (ImGui::InputText("Home Assistant Web Hook URL for Home Team (Blue)", &reqhomeUrlex)) {
-
-				haHomeCvargui.setValue(reqhomeUrlex);
-
-			}
-
-
-			if (!haAwayCvargui) { return; }
-			std::string reqawayUrlex = haAwayCvargui.getStringValue();
+					}
 
 
-			//char const* currentUrl = reqawayUrlex.data();
+					if (!haAwayCvargui) { return; }
+					std::string reqawayUrlex = haAwayCvargui.getStringValue();
 
-			if (ImGui::InputText("Home Assistant Web Hook URL For Away Team (Orange)", &reqawayUrlex)) {
 
-				haAwayCvargui.setValue(reqawayUrlex);
+					//char const* currentUrl = reqawayUrlex.data();
+					
+					if (ImGui::InputText("Home Assistant Web Hook URL For Away Team (Orange)", &reqawayUrlex)) {
 
+						haAwayCvargui.setValue(reqawayUrlex);
+
+					}
+				}
 			}
 		}
-		 
 
 		//Goal Scored hook Gui
 
@@ -127,33 +195,33 @@ void RocketLeagueAssistant::RenderSettings() {
 		if (ImGui::IsItemHovered()) {
 			ImGui::SetTooltip("Toggle Webhook");
 		}
+		if (jsonEnabled != true) {
+			if (goalScoredEnabled == true) {
+				if (globalURLEnabled != true) {
+					if (!haHomeGoalScoredCvargui) { return; }
+					std::string reqhomeGoalUrlex = haHomeGoalScoredCvargui.getStringValue();
+					
+					if (ImGui::InputText("Home Assistant Web Hook URL for Your Team Scored", &reqhomeGoalUrlex)) {
 
-		if (goalScoredEnabled == true) {
+						haHomeGoalScoredCvargui.setValue(reqhomeGoalUrlex);
 
-			if (!haHomeGoalScoredCvargui) { return; }
-			std::string reqhomeGoalUrlex = haHomeGoalScoredCvargui.getStringValue();
+					}
 
-			if (ImGui::InputText("Home Assistant Web Hook URL for Your Team Scored", &reqhomeGoalUrlex)) {
 
-				haHomeGoalScoredCvargui.setValue(reqhomeGoalUrlex);
+					if (!haAwayGoalScoredCvargui) { return; }
+					std::string reqawayGoalUrlex = haAwayGoalScoredCvargui.getStringValue();
 
+
+					//char const* currentUrl = reqawayUrlex.data();
+					
+					if (ImGui::InputText("Home Assistant Web Hook URL For Other Team Scored", &reqawayGoalUrlex)) {
+
+						haAwayGoalScoredCvargui.setValue(reqawayGoalUrlex);
+
+					}
+				}
 			}
-
-
-			if (!haAwayGoalScoredCvargui) { return; }
-			std::string reqawayGoalUrlex = haAwayGoalScoredCvargui.getStringValue();
-
-
-			//char const* currentUrl = reqawayUrlex.data();
-
-			if (ImGui::InputText("Home Assistant Web Hook URL For Other Team Scored", &reqawayGoalUrlex)) {
-
-				haAwayGoalScoredCvargui.setValue(reqawayGoalUrlex);
-
-			}
-
 		}
-
 		//Demos hook Gui
 
 		bool demosEnabled = demosEnableCvar.getBoolValue();
@@ -165,18 +233,20 @@ void RocketLeagueAssistant::RenderSettings() {
 			ImGui::SetTooltip("Toggle Webhook");
 		}
 
-		if (demosEnabled == true) {
+		if (jsonEnabled != true) {
+			if (demosEnabled == true) {
+				if (globalURLEnabled != true) {
+					if (!haDemosCvargui) { return; }
+					std::string reqdemosUrlex = haDemosCvargui.getStringValue();
+					
+					if (ImGui::InputText("Home Assistant Web Hook URL For Demos", &reqdemosUrlex)) {
 
-			if (!haDemosCvargui) { return; }
-			std::string reqdemosUrlex = haDemosCvargui.getStringValue();
+						haDemosCvargui.setValue(reqdemosUrlex);
 
-			if (ImGui::InputText("Home Assistant Web Hook URL For Demos", &reqdemosUrlex)) {
-
-				haDemosCvargui.setValue(reqdemosUrlex);
-
+					}
+				}
 			}
 		}
-
 
 		//Overtime hook GUI
 
@@ -189,18 +259,21 @@ void RocketLeagueAssistant::RenderSettings() {
 			ImGui::SetTooltip("Toggle Webhook");
 		}
 
-		if (overtimeEnabled == true) {
+		if (jsonEnabled != true) {
 
-			if (!haOvertimeCvargui) { return; }
-			std::string reqovertimeUrlex = haOvertimeCvargui.getStringValue();
+			if (overtimeEnabled == true) {
+				if (globalURLEnabled != true) {
+					if (!haOvertimeCvargui) { return; }
+					std::string reqovertimeUrlex = haOvertimeCvargui.getStringValue();
+					
+					if (ImGui::InputText("Home Assistant Web Hook URL For Overtime", &reqovertimeUrlex)) {
 
-			if (ImGui::InputText("Home Assistant Web Hook URL For Overtime", &reqovertimeUrlex)) {
+						haOvertimeCvargui.setValue(reqovertimeUrlex);
 
-				haOvertimeCvargui.setValue(reqovertimeUrlex);
-
+					}
+				}
 			}
 		}
-
 		//Freeplay hook Gui
 
 		bool freeplayEnabled = freeplayEnableCvar.getBoolValue();
@@ -212,15 +285,19 @@ void RocketLeagueAssistant::RenderSettings() {
 			ImGui::SetTooltip("Toggle Webhook");
 		}
 
-		if (freeplayEnabled == true) {
+		if (jsonEnabled != true) {
 
-			if (!haFreeplayCvargui) { return; }
-			std::string reqFreeplayUrlex = haFreeplayCvargui.getStringValue();
+			if (freeplayEnabled == true) {
+				if (globalURLEnabled != true) {
+					if (!haFreeplayCvargui) { return; }
+					std::string reqFreeplayUrlex = haFreeplayCvargui.getStringValue();
+					
+					if (ImGui::InputText("Home Assistant Web Hook URL For Freeplay", &reqFreeplayUrlex)) {
 
-			if (ImGui::InputText("Home Assistant Web Hook URL For Freeplay", &reqFreeplayUrlex)) {
+						haFreeplayCvargui.setValue(reqFreeplayUrlex);
 
-				haFreeplayCvargui.setValue(reqFreeplayUrlex);
-
+					}
+				}
 			}
 		}
 
@@ -235,18 +312,22 @@ void RocketLeagueAssistant::RenderSettings() {
 			ImGui::SetTooltip("Toggle Webhook");
 		}
 
-		if (mainmenuEnabled == true) {
+		if (jsonEnabled != true) {
 
-			if (!haMainMenuCvargui) { return; }
-			std::string reqMainMenuUrlex = haMainMenuCvargui.getStringValue();
+			if (mainmenuEnabled == true) {
+				if (globalURLEnabled != true) {
 
-			if (ImGui::InputText("Home Assistant Web Hook URL For Main Menu", &reqMainMenuUrlex)) {
+					if (!haMainMenuCvargui) { return; }
+					std::string reqMainMenuUrlex = haMainMenuCvargui.getStringValue();
+					
+					if (ImGui::InputText("Home Assistant Web Hook URL For Main Menu", &reqMainMenuUrlex)) {
 
-				haMainMenuCvargui.setValue(reqMainMenuUrlex);
+						haMainMenuCvargui.setValue(reqMainMenuUrlex);
 
+					}
+				}
 			}
 		}
-
 		//Exit hook Gui
 
 		bool exitEnabled = exitEnableCvar.getBoolValue();
@@ -258,50 +339,105 @@ void RocketLeagueAssistant::RenderSettings() {
 			ImGui::SetTooltip("Toggle Webhook");
 		}
 
-		if (exitEnabled == true) {
+		if (jsonEnabled != true) {
+			if (exitEnabled == true) {
+				if (globalURLEnabled != true) {
+					if (!haExitCvargui) { return; }
+					std::string reqExitUrlex = haExitCvargui.getStringValue();
+					
+					if (ImGui::InputText("Home Assistant Web Hook URL For Game Exit", &reqExitUrlex)) {
 
-			if (!haExitCvargui) { return; }
-			std::string reqExitUrlex = haExitCvargui.getStringValue();
+						haExitCvargui.setValue(reqExitUrlex);
 
-			if (ImGui::InputText("Home Assistant Web Hook URL For Game Exit", &reqExitUrlex)) {
-
-				haExitCvargui.setValue(reqExitUrlex);
-
+					}
+				}
 			}
 		}
-	
-	
+
+
 	}
 
 
 	ImGui::Spacing();
-	ImGui::Spacing();
+	
+	if (ImGui::CollapsingHeader("Automation Template Generator")) {
+
+		//Prep for possibly using tokens in the future for requests over https
+
+
+		
+		ImGui::PopItemWidth();
+		if (!haHaBaseURLCvargui) { return; }
+		std::string haBaseUrlex = haHaBaseURLCvargui.getStringValue();
+		ImGui::PushItemWidth(15.0 * ImGui::GetFontSize());
+		if (ImGui::InputText("Home Assistant Address", &haBaseUrlex)) {
+
+			haHaBaseURLCvargui.setValue(haBaseUrlex);
+
+		}
+		ImGui::PopItemWidth();
+		ImGui::PopItemWidth();
+		std::string reqTokenex = "Long Lived Access Token";
+		CVarWrapper htokenCvarGui = cvarManager->getCvar("ha_token");
+		if (!htokenCvarGui) { return; }
+		reqTokenex = htokenCvarGui.getStringValue();
+
+
+		std::string usertoken = "Home Assistant Token";
+
+		
+		if (ImGui::InputText("Home Assistant Token", &reqTokenex)) {
+
+			htokenCvarGui.setValue(reqTokenex);
+
+		}
+
+
+
+		//ImGui::Button("Apply Token");
+
+		if (ImGui::Button("Generate Automation Base Template")) {
+			std::string generatedWebHook = RocketLeagueAssistant::GenWebHook();
+			std::string generatedAutomationID = RocketLeagueAssistant::GenAutomationID();
+
+			//RocketLeagueAssistant::GenAutomationID();
+			LOG("{}", generatedWebHook);
+			LOG("{}", generatedAutomationID);
+
+			RocketLeagueAssistant::CreateAutomation(generatedWebHook, generatedAutomationID);
+			
+			std::string generateWebHookFull = haBaseUrlex +  "/api/webhook/" + generatedWebHook;
+			
+			haJsonURLCvargui.setValue(generateWebHookFull);
+
+		}
+
+		ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.2f, 1.0f), "IT IS RECOMMENDED TO DELETE THE TOKEN IN HOME ASSISTANT AFTER THE AUTOMATION HAS BEEN GENERATED");
+		ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.2f, 1.0f), "THE TOKEN IS DELETED WHEN THE GAME IS CLOSED");
+	}
 	ImGui::Spacing();
 
+	ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal);
+
+	ImGui::Spacing();
+
+	
 	ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.2f, 1.0f), "Made by GTT1229"); ImGui::SameLine(); ImGui::TextColored(ImVec4(0.2f, 0.6f, 1.0f, 1.0f), "Sponsored by Skordy");
 
+	if (ImGui::TreeNode("Extras")) {
 
-	//Prep for possibly using tokens in the future for requests over https
+		if (ImGui::Checkbox("Hide JSON URL", &hideURL)) {
+			hideURLCvar.setValue(hideURL);
+		}
+		if (ImGui::IsItemHovered()) {
+			ImGui::SetTooltip("Hide JSON URL");
+		}
 
-	//static char hatokensize[128] = "";
-	//CVarWrapper htokenCvarGui = cvarManager->getCvar("ha_token");
-	//if (!htokenCvarGui) { return; }
-	//std::string reqTokenex = htokenCvarGui.getStringValue();
+	ImGui::TreePop();
 
-
-	//std::string usertoken = "Home Assistant Token";
-	
-	
-		//if (ImGui::InputText("Home Assistant Token", &reqTokenex)) {
-
-	//	htokenCvarGui.setValue(reqTokenex);
-
-	//}
-
-
-
-	//ImGui::Button("Apply Token");
+	}
 }
+
 
 
 
@@ -357,11 +493,13 @@ bool RocketLeagueAssistant::IsActiveOverlay()
 void RocketLeagueAssistant::OnOpen()
 {
 	isWindowOpen_ = true;
+
 }
 
 // Called when window is closed
 void RocketLeagueAssistant::OnClose()
 {
 	isWindowOpen_ = false;
+
 }
 
