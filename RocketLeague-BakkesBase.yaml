@@ -1,0 +1,59 @@
+alias: RocketLeague - BakkesBase
+description: ""
+trigger:
+  - platform: webhook
+    webhook_id: CHANGETHIS
+condition: []
+action:
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.json.data == 'home' }}"
+            alias: Blue Team (Home) Automation
+        sequence: []
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.json.data == 'away' }}"
+            alias: Orange Team (Away) Automation
+        sequence: []
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.json.data == 'mainmenu' }}"
+            alias: Main Menu Automation
+        sequence: []
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.json.data == 'teamScored' }}"
+            alias: Your Team Scored Automation
+        sequence: []
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.json.data == 'otherTeamScored' }}"
+            alias: The Other Team Scored Automation
+        sequence: []
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.json.data == 'teamDemoed' }}"
+            alias: Your Team Demo'd the Other Team Automation
+        sequence: []
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.json.data == 'gotDemoed' }}"
+            alias: The Other Team Demo'd Your Team Automation
+        sequence: []
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.json.data == 'freeplay' }}"
+            alias: Freeplay Automation
+        sequence: []
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.json.data == 'overtime' }}"
+            alias: Overtime Automation
+        sequence: []
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.json.data == 'exit' }}"
+            alias: "Game Exit Automation (ex: Return Lights to Normal)"
+        sequence: []
+mode: single
