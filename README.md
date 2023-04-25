@@ -57,7 +57,7 @@ The plugin utilizes Home Assistant's built in Webhook automation trigger with JS
    
    d. Click `Generate Automation Base Template`. Your *Home Assistant Web Hook Global URL* field will be automatically populated with the appropiate URL for Home Assistant. 
     
-   ***The token will be automatically erased from the plugin and config file for security reasons. It is suggested to also delete the token from Home Assistant after, so your token can not be used.***
+   ***The token will be automatically erased from the plugin and config file on game close for security reasons. It is suggested to also delete the token from Home Assistant after automation generation is complete and confirmed.***
 
    The plugin configuration is done.
     
