@@ -93,7 +93,7 @@ enabled: true
 2. Select **Edit in YAML**
 3. Paste the contents of [RocketLeague-BakkesBase.yaml](RocketLeague-BakkesBase.yaml)
 4. Manually create a Webhook-ID (A Webhook-ID should be treated as a password and should be randomized like one)
-5. Edit the actions respectively as shown in [Option 1](https://github.com/Gtt1229/RocketLeagueAssistant/edit/main/README.md#option-1---generate-the-base-automation-using-the-in-game-plugin-settings-window) step 4
+5. Edit the actions respectively as shown in [Option 1](#option-1---generate-the-base-automation-using-the-in-game-plugin-settings-window) step 4
 
 
 ## Home Assistant Scenes Configuration to be Used in Automation(Not Required):
