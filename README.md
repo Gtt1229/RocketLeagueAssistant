@@ -11,19 +11,6 @@ And some other person named Josh
 # Home Assistant Configuration
 The plugin utilizes Home Assistant's built in Webhook automation trigger with JSON-based conditions.
 
-## HA Scenes Configuration(Not Required):
-
-1. Create a new scene corresponding to the scenario (Home Team, Away Team, Demos, etc)
-2. Give it a name (and icon/area if you'd like)
-3. Add entities/devices to the scene and adjust the colors accordingly
-4. Save the scene
-5. Create a new, or duplicate the scene.
-6. Add entities/devices to the scene and adjust the colors accordingly.
-7. Save the scene
-8. Repeat
-
-[**More on scene creation here**](https://www.home-assistant.io/integrations/scene/)
-
 ## HA Webhooks Configuration:
 
 ### Option 1 - Generate the base automation using the in-game plugin settings window
@@ -101,6 +88,20 @@ enabled: true
 2. Select **Edit in YAML**
 3. Paste the contents of [RocketLeague-BakkesBase.yaml](RocketLeague-BakkesBase.yaml)
 4. Edit the actions respectively as shown in Option 1
+
+
+## HA Scenes Configuration to be Used in Automation(Not Required):
+
+1. Create a new scene corresponding to the scenario (Home Team, Away Team, Demos, etc)
+2. Give it a name (and icon/area if you'd like)
+3. Add entities/devices to the scene and adjust the colors accordingly
+4. Save the scene
+5. Create a new, or duplicate the scene.
+6. Add entities/devices to the scene and adjust the colors accordingly.
+7. Save the scene
+8. Repeat
+
+[**More on scene creation here**](https://www.home-assistant.io/integrations/scene/)
 
 ### Notes
 
