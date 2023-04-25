@@ -13,7 +13,7 @@ The plugin utilizes Home Assistant's built in Webhook automation trigger with JS
 
 ## Home Assistant Automations Configuration:
 
-- [Option 1](https://github.com/Gtt1229/RocketLeagueAssistant/edit/main/README.md#option-1---generate-the-base-automation-using-the-in-game-plugin-settings-window) - Use a Long-Lived Access Token to automatically create a base automation using the Home Assistant's API
+- [Option 1](https://github.com/Gtt1229/RocketLeagueAssistant/edit/main/README.md#option-1---generate-the-base-automation-using-the-in-game-plugin-settings-window) - Use a Long-Lived Access Token to automatically create a base automation using Home Assistant's API
 - [Option 2](https://github.com/Gtt1229/RocketLeagueAssistant/edit/main/README.md#option-2---create-a-new-automation-using-the-rocketleague-bakkesbaseyaml-file) - Manually copy and paste the automation YAML to create the base automation
 
 
