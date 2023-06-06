@@ -5,9 +5,10 @@
 #include "imgui_stdlib.h"
 
 
+
 // Plugin Settings Window code here
 std::string RocketLeagueAssistant::GetPluginName() {
-	return "RocketLeagueAssistant";
+	return "RocketLeagueAssistant BETA";
 }
 
 void RocketLeagueAssistant::SetImGuiContext(uintptr_t ctx) {
@@ -58,6 +59,10 @@ void RocketLeagueAssistant::RenderSettings() {
 	CVarWrapper haHaBaseURLCvargui = cvarManager->getCvar("ha_haBaseURL");
 	CVarWrapper hideURLCvar = cvarManager->getCvar("hideURL");
 	
+	CVarWrapper version7Cvar = cvarManager->getCvar("version7");
+	if (!version7Cvar) { return; }
+
+	bool version7 = version7Cvar.getBoolValue();
 
 	if (!enableCvar) { return; }
 	if (!teamsEnableCvar) { return; }
@@ -102,7 +107,7 @@ void RocketLeagueAssistant::RenderSettings() {
 			
 			if (!haJsonURLCvargui) { return; }
 			std::string jsonUrlex = haJsonURLCvargui.getStringValue();
-			ImGui::PushItemWidth(33.0 * ImGui::GetFontSize());
+			ImGui::PushItemWidth(33.0f * ImGui::GetFontSize());
 			
 			if (hideURL == false) {
 				if (ImGui::InputText("Home Assistant Web Hook Global URL", &jsonUrlex)) {
@@ -132,7 +137,7 @@ void RocketLeagueAssistant::RenderSettings() {
 
 				if (!haGlobalURLCvargui) { return; }
 				std::string globalUrlex = haGlobalURLCvargui.getStringValue();
-				ImGui::PushItemWidth(33.0 * ImGui::GetFontSize());
+				ImGui::PushItemWidth(33.0f * ImGui::GetFontSize());
 				if (ImGui::InputText("Home Assistant Web Hook Automation URL", &globalUrlex)) {
 
 					haGlobalURLCvargui.setValue(globalUrlex);
@@ -145,7 +150,7 @@ void RocketLeagueAssistant::RenderSettings() {
 		}
 		ImGui::Spacing();
 		ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal);
-		ImGui::PushItemWidth(33.0 * ImGui::GetFontSize());
+		ImGui::PushItemWidth(33.0f * ImGui::GetFontSize());
 		//Team color hook Gui
 		bool teamsEnabled = teamsEnableCvar.getBoolValue();
 
@@ -369,7 +374,7 @@ void RocketLeagueAssistant::RenderSettings() {
 		ImGui::PopItemWidth();
 		if (!haHaBaseURLCvargui) { return; }
 		std::string haBaseUrlex = haHaBaseURLCvargui.getStringValue();
-		ImGui::PushItemWidth(15.0 * ImGui::GetFontSize());
+		ImGui::PushItemWidth(15.0f * ImGui::GetFontSize());
 		if (ImGui::InputText("Home Assistant Address", &haBaseUrlex)) {
 
 			haHaBaseURLCvargui.setValue(haBaseUrlex);
@@ -397,23 +402,14 @@ void RocketLeagueAssistant::RenderSettings() {
 		//ImGui::Button("Apply Token");
 
 		if (ImGui::Button("Generate Automation Base Template")) {
-			std::string generatedWebHook = RocketLeagueAssistant::GenWebHook();
-			std::string generatedAutomationID = RocketLeagueAssistant::GenAutomationID();
 
-			//RocketLeagueAssistant::GenAutomationID();
-			LOG("{}", generatedWebHook);
-			LOG("{}", generatedAutomationID);
-
-			RocketLeagueAssistant::CreateAutomation(generatedWebHook, generatedAutomationID);
-			
-			std::string generateWebHookFull = haBaseUrlex +  "/api/webhook/" + generatedWebHook;
-			
-			haJsonURLCvargui.setValue(generateWebHookFull);
+			RocketLeagueAssistant::GetHAVersion();
 
 		}
 
+
 		ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.2f, 1.0f), "IT IS RECOMMENDED TO DELETE THE TOKEN IN HOME ASSISTANT AFTER THE AUTOMATION HAS BEEN GENERATED");
-		ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.2f, 1.0f), "THE TOKEN IS DELETED WHEN THE GAME IS CLOSED");
+		ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.2f, 1.0f), "THE TOKEN IS DELETED FROM BAKKES WHEN THE GAME IS CLOSED");
 	}
 	ImGui::Spacing();
 

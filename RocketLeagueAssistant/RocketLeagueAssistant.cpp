@@ -7,7 +7,7 @@
 
 
 
-BAKKESMOD_PLUGIN(RocketLeagueAssistant, "Rocket League/HomeAsisstant Integration", plugin_version, PLUGINTYPE_BOTAI)
+BAKKESMOD_PLUGIN(RocketLeagueAssistant, "Rocket League/HomeAsisstant Integration", plugin_version, PLUGINTYPE_THREADEDUNLOAD)
 
 
 std::shared_ptr<CVarManagerWrapper> _globalCvarManager;
@@ -19,7 +19,7 @@ void RocketLeagueAssistant::onLoad()
 	cvarManager->registerNotifier("rlamodel", [this](std::vector<std::string> args) {
 		 
 		UpdateModal();
-
+	
 		}, "", PERMISSION_ALL);
 
 	//Enable Cvars
@@ -35,6 +35,9 @@ void RocketLeagueAssistant::onLoad()
 	cvarManager->registerCvar("exit_enabled", "1", "Enable Exit Webhook", true, true, 0, true, 1);
 	cvarManager->registerCvar("isReplay", "0", "Replay boolean", true, true, 0, true, 1);
 	cvarManager->registerCvar("hideURL", "false", "HideURL boolean", true, true, 0, true, 1);
+
+	//HA version CVAR, only used for automation creation to confirm if the new webhook methods are needed
+	cvarManager->registerCvar("version7", "false", "Version 2023.7 and up", true, true, 0, true, 1);
 
 	//URL Cvars
 	cvarManager->registerCvar("ha_globalURL", "http://192.168.1.256:8123/api/webhook/webhook-light-example");
@@ -52,6 +55,7 @@ void RocketLeagueAssistant::onLoad()
 
 	//Team CVARs
 	cvarManager->registerCvar("ha_playersTeam", "2");
+	cvarManager->registerCvar("ha_otherTeam", "2");
 	cvarManager->registerCvar("ha_myTeamPrimaryRGBColor", "\"r\":\"255\", \"g\":\"0\", \"b\":\"0\"");
 	cvarManager->registerCvar("ha_OtherTeamPrimaryRGBColor", "\"r\":\"255\", \"g\":\"0\", \"b\":\"0\"");
 
@@ -79,27 +83,6 @@ void RocketLeagueAssistant::onLoad()
 
 void RocketLeagueAssistant::onUnload()
 {
-
-	//LOG("Force Closed Game Test");
-	//Check if plugin is enabled
-	CVarWrapper enableCvar = cvarManager->getCvar("ha_enabled");
-	bool enabled = enableCvar.getBoolValue();
-
-	if (!enabled) { LOG("RocketLeagueAssistant is not enabled"); return; }
-
-	//See if exit hook is enabled
-	CVarWrapper exitEnabledCvar = cvarManager->getCvar("exit_enabled");
-	bool exitEnabled = exitEnabledCvar.getBoolValue();
-	if (!exitEnabled) { LOG("Exit Automations are not enabled"); return; }
-
-	//Get exit automation url, transform, and convert to string
-	CVarWrapper haExitCVar = cvarManager->getCvar("ha_exit");
-	if (!haExitCVar) { return; }
-	auto reqUrlexit = cvarManager->getCvar("ha_exit");
-	std::string reqUrlExitString = reqUrlexit.getStringValue();
-	std::string event = "exit";
-	LOG("Using Exit Hook");
-	SendCommands(reqUrlExitString, event);
 
 	CVarWrapper htokenCvar = cvarManager->getCvar("ha_token");
 	if (!htokenCvar) { return; }
@@ -210,20 +193,34 @@ void RocketLeagueAssistant::LoadTeams(std::string name)
 
 		TeamWrapper myTeam = teams.Get(teamnum);
 		if (teamnum > 1) { LOG("teamNum check failed");   return; }
-		
+						
 		int otherteamnum = 0;
+		
+		if (teamnum == 0) {
+		
+			otherteamnum = 1;
+		
+		}
+		
+		if (teamnum == 1) {
+		
+			otherteamnum = 0;
+		
+		}
+
 		TeamWrapper otherTeam = teams.Get(otherteamnum);
+
 
 		//set other team's number based on player's current team number
 		if (teamnum == 0) {
 
-			int otherteamnum = 1;
+			otherteamnum = 1;
 			TeamWrapper otherTeam = teams.Get(otherteamnum);
 		}
 
 		if (teamnum == 1) {
 
-			int otherteamnum = 0;
+			otherteamnum = 0;
 			TeamWrapper otherTeam = teams.Get(otherteamnum);
 		}
 		
@@ -267,6 +264,9 @@ void RocketLeagueAssistant::LoadTeams(std::string name)
 		//get current team cvar
 		CVarWrapper ha_playersTeam = cvarManager->getCvar("ha_playersTeam");
 		if (!ha_playersTeam) { return; }
+
+		CVarWrapper ha_otherTeam = cvarManager->getCvar("ha_otherTeam");
+		if (!ha_otherTeam) { return; }
 		//
 
 		//this may be redundant?
@@ -277,6 +277,10 @@ void RocketLeagueAssistant::LoadTeams(std::string name)
 		std::string reqUrlHomeString = reqUrlHome.getStringValue();
 		std::string reqUrlAwayString = reqUrlAway.getStringValue();
 
+
+
+		
+
 		//Send based on home or away team
 		if (teamnum <= 1) {
 
@@ -284,18 +288,19 @@ void RocketLeagueAssistant::LoadTeams(std::string name)
 
 				std::string event = "home";
 				std::string reqUrlTeam = reqUrlHomeString;
-				SendCommands(reqUrlTeam, event);
 				ha_playersTeam.setValue(teamnum);
+				ha_otherTeam.setValue(1);
 				LOG("Using Home Team Colors");
-
+				SendCommands(reqUrlTeam, event);
 			}   
 
 			if (teamnum == 1) {
 				std::string event = "away";
 				std::string reqUrlTeam = reqUrlAwayString;
-				SendCommands(reqUrlTeam, event);
 				ha_playersTeam.setValue(teamnum);
+				ha_otherTeam.setValue(0);
 				LOG("Using Away Team Colors");
+				SendCommands(reqUrlTeam, event);
 			}
 
 		}
@@ -324,8 +329,8 @@ std::string RocketLeagueAssistant::ConvertLinearColor(float red, float green, fl
 
 
 	//Formats to JSON
-	std::string rgbColors = "\"r\":\"" + R + "\", \"g\":\"" + G + "\", \"b\":\"" + B + "\"";
-	//LOG("{}", rgbColors);
+	std::string rgbColors = "\"r\":" + R + ", \"g\":" + G + ", \"b\":" + B;
+	//LOG("These the RGB colors{}", rgbColors);
 	return rgbColors;
 
 }
@@ -366,6 +371,25 @@ void RocketLeagueAssistant::StatsHook(void* params)
 	auto haplayersTeam = cvarManager->getCvar("ha_playersTeam");
 	int haplayersTeam2 = haplayersTeam.getIntValue();
 
+	//get current otherteam cvar
+	CVarWrapper ha_otherTeam = cvarManager->getCvar("ha_otherTeam");
+	if (!ha_otherTeam) { return; }
+	//
+	auto haotherTeam = cvarManager->getCvar("ha_otherTeam");
+	int haotherTeam2 = haotherTeam.getIntValue();
+
+	//setup teamwrapper
+
+	ServerWrapper server = gameWrapper->GetCurrentGameState();
+	if (!server) { LOG("Server nullcheck failed");   return; }
+
+	auto primary = server.GetLocalPrimaryPlayer();
+	if (!primary) { LOG("Server primary nullcheck failed");   return; }
+
+	auto teams = server.GetTeams();
+	if (teams.Count() < 2) { return; }
+
+
 	//this may be redundant?
 	auto reqGoalUrlHome = cvarManager->getCvar("ha_goalHome");
 	auto reqGoalUrlAway = cvarManager->getCvar("ha_goalAway");
@@ -392,6 +416,8 @@ void RocketLeagueAssistant::StatsHook(void* params)
 	PriWrapper victim = PriWrapper(pStruct->Victim);
 	StatEventWrapper statEvent = StatEventWrapper(pStruct->StatEvent);
 	
+
+
 	//LOG("StatEventOccured");
 	if (statEvent.GetEventName() == "Goal") {
 
@@ -404,6 +430,7 @@ void RocketLeagueAssistant::StatsHook(void* params)
 		CVarWrapper replayCvar = cvarManager->getCvar("isReplay");
 		bool isReplay = replayCvar.getBoolValue();
 		if (isReplay == true) { Log("It's a replay"); return; }
+
 
 		int tmpCounter = 0;
 		int lastGoalScoredBy = receiver.GetTeamNum();
@@ -425,7 +452,8 @@ void RocketLeagueAssistant::StatsHook(void* params)
 
 		}
 
-
+		LOG("Other Team's Score: {}", teams.Get(haotherTeam2).GetScore());
+		LOG("Your Team's Score: {}", teams.Get(haplayersTeam2).GetScore());
 
 		LOG("Using Goals Hook", lastGoalScoredBy);
 	}
@@ -535,6 +563,7 @@ void RocketLeagueAssistant::FreeplayHook()
 		auto reqUrlFreeplay = cvarManager->getCvar("ha_freeplay");
 		std::string reqUrlFreeplayString = reqUrlFreeplay.getStringValue();
 		std::string event = "freeplay";
+		LOG("Sending freeplay commands");
 		SendCommands(reqUrlFreeplayString, event);
 
 	}
@@ -546,12 +575,12 @@ void RocketLeagueAssistant::MainMenuHook(std::string name)
 
 
 
-	CVarWrapper updateBoolcvar = cvarManager->getCvar("updateModal_enabled");
-	bool updateBool = updateBoolcvar.getBoolValue();
-	//LOG("Rocket League Assistant Update Boolean: {}", updateBool);
-	if (updateBool == false) {
-		UpdateModal();
-	}
+	//CVarWrapper updateBoolcvar = cvarManager->getCvar("updateModal_enabled");
+	//bool updateBool = updateBoolcvar.getBoolValue();
+	////LOG("Rocket League Assistant Update Boolean: {}", updateBool);
+	//if (updateBool == false) {
+	//	UpdateModal();
+	//}
 	
 
 	//Check if plugin is enabled
@@ -653,31 +682,75 @@ void RocketLeagueAssistant::NotReplay(std::string name)
 
 }
 
+int RocketLeagueAssistant::GetScore(int teamNum)
+{
+
+
+	//setup teamwrapper
+	//LOG("Getting score");
+	ServerWrapper server = gameWrapper->GetCurrentGameState();
+	if (!server) { LOG("Server nullcheck failed");   return 99; }
+
+	auto primary = server.GetLocalPrimaryPlayer();
+	if (!primary) { LOG("Server primary nullcheck failed");   return 99; }
+	//LOG("TEAM NUM {}", teamNum);
+	//LOG("gettings teams");
+	auto teams = server.GetTeams();
+	if (teams.Count() < 2) { return 99; }
+	if (teams.Count() < 2) { return 99; }
+	//LOG("Getting score2");
+	int score = teams.Get(teamNum).GetScore();
+	//LOG("Returning score");
+	return score;
+
+}
+
 void RocketLeagueAssistant::Log(std::string msg)
 {
 	//Send logs to BakkesMod console
 	cvarManager->log(msg);
 }
 
+//void RocketLeagueAssistant::UpdateModal()
+//{
+//	//Notify users of JSON implementation with a Modal popup
+//	ModalWrapper updateModal = gameWrapper->CreateModal("Plugin Change");
+//	const std::string iconName = "Texture2D gfx_shared.Icon_Warning";
+//	updateModal.SetIcon(iconName);
+//	updateModal.SetColor(255, 157, 147);
+//	updateModal.SetBody(R"T(Rocket League Assistant has changed its default functionality to utilize JSON based requests.
+//	
+//This may break your automations unless you deselect "Use JSON for Home Assistant communications" in the plugin's settings to disable this functionality.
+//
+//You can read about the changes at
+//https://github.com/Gtt1229/RocketLeagueAssistant )T");
+//
+//	std::string name = "None";
+//	updateModal.AddButton("I Understand", false, [this, name]() {this->RocketLeagueAssistant::modalClosed("I understand"); });
+//	updateModal.AddButton("Open Bakkes Settings", true, [this, name]() {this->RocketLeagueAssistant::modalClosed("settings"); });
+//
+//}
+
 void RocketLeagueAssistant::UpdateModal()
 {
 	//Notify users of JSON implementation with a Modal popup
-	ModalWrapper updateModal = gameWrapper->CreateModal("Plugin Change");
-	const std::string iconName = "gfx_shared.Icon_Warning";
-	updateModal.SetIcon(iconName);
-	updateModal.SetColor(255, 157, 147);
-	updateModal.SetBody(R"T(
-Rocket League Assistant has changed its default functionality to utilize JSON based requests.
-	
-This may break your automations unless you deselect "Use JSON for Home Assistant communications" in the plugin's settings to disable this functionality.
+	TextInputModalWrapper updateModal = gameWrapper->CreateTextInputModal("Plugin Change");
+	const std::string iconName = "Texture2D gfx_shared.Icon_Warning";
+		
+	updateModal.SetTextInput("Enter text:", 30, false, [&](std::string input, bool was_closed)
+		{
 
-You can read about the changes at
-https://github.com/Gtt1229/RocketLeagueAssistant )T");
+			RocketLeagueAssistant::OnInput(input, was_closed);
 
-	std::string name = "None";
-	updateModal.AddButton("I Understand", false, [this, name]() {this->RocketLeagueAssistant::modalClosed("I understand"); });
-	updateModal.AddButton("Open Bakkes Settings", true, [this, name]() {this->RocketLeagueAssistant::modalClosed("settings"); });
+		});
+		
 	
+
+}
+
+void RocketLeagueAssistant::OnInput(const std::string& input, bool was_closed)
+{
+	LOG("input:: {}", input);
 }
 
 void RocketLeagueAssistant::modalClosed(std::string name) {
@@ -697,4 +770,3 @@ void RocketLeagueAssistant::modalClosed(std::string name) {
 	return;
 	
 }
-

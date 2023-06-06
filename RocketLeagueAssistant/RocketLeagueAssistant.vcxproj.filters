@@ -84,6 +84,9 @@
     <ClCompile Include="CreateAutomationBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GetHAVersion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RocketLeagueAssistant.h">

@@ -35,9 +35,12 @@ public:
 	void SendCommands(std::string reqUrl, std::string event);
 	std::string GenWebHook();
 	std::string GenAutomationID();
-	void CreateAutomation(std::string webhookURL, std::string automationID);
+	void CreateAutomation(bool version7bool);
 	void UpdateModal();
 	void modalClosed(std::string name);
+	int GetScore(int teamNum);
+	void GetHAVersion();
+	void OnInput(const std::string& input, bool was_closed);
 
 
 	//GUI
