@@ -81,9 +81,9 @@ The plugin utilizes Home Assistant's built in Webhook automation trigger with JS
 service: light.turn_on
 data:
   rgb_color:
-    - "{{ trigger.json.teamColor[0].r |int }}"
-    - "{{ trigger.json.teamColor[0].g |int }}"
-    - "{{ trigger.json.teamColor[0].B |int }}"
+    - "{{ trigger.json.TeamData.PlayersTeam.color.r |int }}"
+    - "{{ trigger.json.TeamData.PlayersTeam.color.g |int }}"
+    - "{{ trigger.json.TeamData.PlayersTeam.color.b |int }}"
 target:
   entity_id: light.LIGHTNAMEHERE
 enabled: true
