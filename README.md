@@ -11,20 +11,12 @@ And some other person named Josh
 # Home Assistant Configuration
 The plugin utilizes Home Assistant's built in Webhook automation trigger with JSON-based conditions.
 
-## HA Scenes Configuration(Not Required):
+## Home Assistant Automations Configuration:
 
-1. Create a new scene corresponding to the scenario (Home Team, Away Team, Demos, etc)
-2. Give it a name (and icon/area if you'd like)
-3. Add entities/devices to the scene and adjust the colors accordingly
-4. Save the scene
-5. Create a new, or duplicate the scene.
-6. Add entities/devices to the scene and adjust the colors accordingly.
-7. Save the scene
-8. Repeat
+- [Option 1](#option-1---generate-the-base-automation-using-the-in-game-plugin-settings-window) - Use a Long-Lived Access Token to automatically create a base automation using Home Assistant's API
+- [Option 2](#option-2---create-a-new-automation-using-the-rocketleague-bakkesbaseyaml-file) - Manually copy and paste the automation YAML to create the base automation
 
-[**More on scene creation here**](https://www.home-assistant.io/integrations/scene/)
 
-## HA Webhooks Configuration:
 
 ### Option 1 - Generate the base automation using the in-game plugin settings window
 
@@ -53,11 +45,11 @@ The plugin utilizes Home Assistant's built in Webhook automation trigger with JS
    
    b. Expand `Automation Template Generator`
    
-   c. Populate your Home Assistant URL and Token generated in step 1
+   c. Populate the *Home Assistant's Address* field with your Home Assistant instance's URL or IP and populate the *Token* field with the token generated in step 1
    
    d. Click `Generate Automation Base Template`. Your *Home Assistant Web Hook Global URL* field will be automatically populated with the appropiate URL for Home Assistant. 
     
-   ***The token will be automatically erased from the plugin and config file on game close for security reasons. It is suggested to also delete the token from Home Assistant after automation generation is complete and confirmed.***
+   **The token will be automatically erased from the plugin and config file on game close for security reasons. It is suggested to also delete the token from Home Assistant after automation generation is complete and confirmed.**
 
    The plugin configuration is done.
     
@@ -100,7 +92,22 @@ enabled: true
 1. Create a new automation
 2. Select **Edit in YAML**
 3. Paste the contents of [RocketLeague-BakkesBase.yaml](RocketLeague-BakkesBase.yaml)
-4. Edit the actions respectively as shown in Option 1
+4. Manually create a Webhook-ID (A Webhook-ID should be treated as a password and should be randomized like one)
+5. Edit the actions respectively as shown in [Option 1](#option-1---generate-the-base-automation-using-the-in-game-plugin-settings-window) step 4
+
+
+## Home Assistant Scenes Configuration to be Used in Automation(Not Required):
+
+1. Create a new scene corresponding to the scenario (Home Team, Away Team, Demos, etc)
+2. Give it a name (and icon/area if you'd like)
+3. Add entities/devices to the scene and adjust the colors accordingly
+4. Save the scene
+5. Create a new, or duplicate the scene.
+6. Add entities/devices to the scene and adjust the colors accordingly.
+7. Save the scene
+8. Repeat
+
+[**More on scene creation here**](https://www.home-assistant.io/integrations/scene/)
 
 ### Notes
 
