@@ -711,42 +711,43 @@ void RocketLeagueAssistant::Log(std::string msg)
 	cvarManager->log(msg);
 }
 
-//void RocketLeagueAssistant::UpdateModal()
-//{
-//	//Notify users of JSON implementation with a Modal popup
-//	ModalWrapper updateModal = gameWrapper->CreateModal("Plugin Change");
-//	const std::string iconName = "Texture2D gfx_shared.Icon_Warning";
-//	updateModal.SetIcon(iconName);
-//	updateModal.SetColor(255, 157, 147);
-//	updateModal.SetBody(R"T(Rocket League Assistant has changed its default functionality to utilize JSON based requests.
-//	
-//This may break your automations unless you deselect "Use JSON for Home Assistant communications" in the plugin's settings to disable this functionality.
-//
-//You can read about the changes at
-//https://github.com/Gtt1229/RocketLeagueAssistant )T");
-//
-//	std::string name = "None";
-//	updateModal.AddButton("I Understand", false, [this, name]() {this->RocketLeagueAssistant::modalClosed("I understand"); });
-//	updateModal.AddButton("Open Bakkes Settings", true, [this, name]() {this->RocketLeagueAssistant::modalClosed("settings"); });
-//
-//}
-
 void RocketLeagueAssistant::UpdateModal()
 {
 	//Notify users of JSON implementation with a Modal popup
-	TextInputModalWrapper updateModal = gameWrapper->CreateTextInputModal("Plugin Change");
+	ModalWrapper updateModal = gameWrapper->CreateModal("Plugin Change");
 	const std::string iconName = "Texture2D gfx_shared.Icon_Warning";
-		
-	updateModal.SetTextInput("Enter text:", 30, false, [&](std::string input, bool was_closed)
-		{
-
-			RocketLeagueAssistant::OnInput(input, was_closed);
-
-		});
-		
+	updateModal.SetIcon(iconName);
+	updateModal.SetColor(255, 157, 147);
+	updateModal.SetBody(R"T(Rocket League Assistant has changed its default functionality to utilize JSON based requests.
 	
+This may break your automations unless you deselect "Use JSON for Home Assistant communications" in the plugin's settings to disable this functionality.
+
+You can read about the changes at
+https://github.com/Gtt1229/RocketLeagueAssistant )T");
+
+	std::string name = "None";
+	updateModal.AddButton("I Understand", false, [this, name]() {this->RocketLeagueAssistant::modalClosed("I understand"); });
+	updateModal.AddButton("Open Bakkes Settings", true, [this, name]() {this->RocketLeagueAssistant::modalClosed("settings"); });
 
 }
+
+//void RocketLeagueAssistant::UpdateModal()
+//{
+//	//Notify users of JSON implementation with a Modal popup
+//	TextInputModalWrapper updateModal = gameWrapper->CreateTextInputModal("Plugin Change");
+//	const std::string iconName = "Texture2D gfx_shared.Icon_Warning";
+//		
+//	updateModal.SetTextInput("Enter text:", 30, false, [&](std::string input, bool was_closed)
+//		{
+//
+//			RocketLeagueAssistant::OnInput(input, was_closed);
+//
+//
+//		});
+//		
+//	
+//
+//}
 
 void RocketLeagueAssistant::OnInput(const std::string& input, bool was_closed)
 {
