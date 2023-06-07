@@ -4,20 +4,9 @@
 #include "IMGUI/imgui_searchablecombo.h"
 #include "imgui_stdlib.h"
 
-void RocketLeagueAssistant::SendCommands(std::string reqUrl, std::string event)
+void RocketLeagueAssistant::SendCommands(std::string event)
 {
 
-	//See if main menu hook is enabled
-	CVarWrapper globalURLEnabledCvar = cvarManager->getCvar("globalURL_enabled");
-	bool globalURLEnabled = globalURLEnabledCvar.getBoolValue();
-
-	//Get automation url, transform
-	CVarWrapper haglobalURLCVar = cvarManager->getCvar("ha_globalURL");
-	if (!haglobalURLCVar) { return; }
-
-	//convert to string
-	auto globalURL = cvarManager->getCvar("ha_globalURL");
-	std::string globalURLString = globalURL.getStringValue();
 
 	//Get RGB Color string
 	CVarWrapper haMyTeamPrimaryColorCVar = cvarManager->getCvar("ha_myTeamPrimaryRGBColor");
@@ -97,32 +86,12 @@ void RocketLeagueAssistant::SendCommands(std::string reqUrl, std::string event)
 	LOG("Sent:{}", jsonBody);
 	req.verb = "POST";
 
-	//Check if JSON is enabled
-	CVarWrapper jsonEnableCvar = cvarManager->getCvar("jsonEnabled");
-	bool jsonEnabled = jsonEnableCvar.getBoolValue();
 
-	if (jsonEnabled == true)
-	{
-		auto reqUrlJSON = cvarManager->getCvar("ha_jsonURL");
-		std::string reqUrlJSONString = reqUrlJSON.getStringValue();
+	auto reqUrlJSON = cvarManager->getCvar("ha_jsonURL");
+	std::string reqUrlJSONString = reqUrlJSON.getStringValue();
 
-		req.url = reqUrlJSONString;
-	}
-	else {
+	req.url = reqUrlJSONString;
 
-		if (globalURLEnabled) {
-
-			req.url = globalURLString;
-			LOG("Using Global URL");
-
-		};
-
-		if (!globalURLEnabled) {
-
-			req.url = reqUrl;
-
-		};
-	};
 	std::map<std::string, std::string> jsonHeader{ {"Content-Type", "application/json"} };
 
 	req.headers = jsonHeader;
