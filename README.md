@@ -35,7 +35,7 @@ The plugin utilizes Home Assistant's built in Webhook automation trigger with JS
 	![HATokenStep2](https://user-images.githubusercontent.com/23534272/234130913-ce4de667-c4f3-452b-8b1e-2f70fc499f34.png)
 	
    You will now have a token similar to this:
-   ```eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI5NTgxMmNlMWIyYmI0OTRhYTIzN2U0NjNiOTIwMmU5MSIsImlhdCI6MTY4MjM2NzE2OSwiZXhwIjoxOTk3NzI3MTY5fQ.9gdUfsDoYXyTPtqi4vIZ0vuRPFZ-fUrSum_4BxEGzcw```
+   `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI5NTgxMmNlMWIyYmI0OTRhYTIzN2U0NjNiOTIwMmU5MSIsImlhdCI6MTY4MjM2NzE2OSwiZXhwIjoxOTk3NzI3MTY5fQ.9gdUfsDoYXyTPtqi4vIZ0vuRPFZ-fUrSum_4BxEGzcw`
    ***You may want to temporarily paste the code into Notepad or the URL bar***
 
 2. **Use the Template Generator in the plugin's setting window**:
@@ -67,8 +67,8 @@ The plugin utilizes Home Assistant's built in Webhook automation trigger with JS
 	
 	a. Select **Call a service** as your action then edit in YAML.
 	
-	This will set the color of your lights to the values of your team's primary color. Populate "LIGHTNAMEHERE" with the corresponding entity ID:
-```
+This will set the color of your lights to the values of your team's primary color. Populate "LIGHTNAMEHERE" with the corresponding entity ID
+```YAML
 service: light.turn_on
 data:
   rgb_color:
@@ -80,8 +80,8 @@ target:
 enabled: true
 ```
 
-	This will set the color of your lights to brighter values of your team's primary color (Useful for Goals/Demos). Populate "LIGHTNAMEHERE" with the corresponding entity ID:
-```
+This will set the color of your lights to brighter values of your team's primary color (Useful for Goals/Demos). Populate "LIGHTNAMEHERE" with the corresponding entity ID:
+```YAML
 service: light.turn_on
 data:
   rgb_color: >
@@ -94,8 +94,8 @@ data:
 target:
   entity_id: light.LIGHTNAMEHERE
 enabled: true
-```	
-	
+```
+
 [**More on automations here**](https://www.home-assistant.io/docs/automation/)	
 
 ### Option 2 - Create a new automation using the [**RocketLeague-BakkesBase.yaml**](RocketLeague-BakkesBase.yaml) file.
