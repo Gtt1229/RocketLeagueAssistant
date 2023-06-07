@@ -68,7 +68,6 @@ The plugin utilizes Home Assistant's built in Webhook automation trigger with JS
 	a. Select **Call a service** as your action then edit in YAML.
 	
 	This will set the color of your lights to the values of your team's primary color. Populate "LIGHTNAMEHERE" with the corresponding entity ID:
-
 ```
 service: light.turn_on
 data:
@@ -81,9 +80,21 @@ target:
 enabled: true
 ```
 
-![HATeamColorEx](https://user-images.githubusercontent.com/23534272/234131035-115831c2-e365-44be-be14-7884b1da742b.png)
-
-	
+	This will set the color of your lights to brighter values of your team's primary color (Useful for Goals/Demos). Populate "LIGHTNAMEHERE" with the corresponding entity ID:
+```
+service: light.turn_on
+data:
+  rgb_color: >
+     {% set r = trigger.json.TeamData.PlayersTeam.color.r | int %}
+     {% set g = trigger.json.TeamData.PlayersTeam.color.g | int %}
+     {% set b = trigger.json.TeamData.PlayersTeam.color.b | int %}
+     {% macro adjust(color) %} {{ color + (255 - color) / 2 }} {% endmacro %}
+     {{ [ adjust(r), adjust(g), adjust(b) ] | join(',') }}
+  brightness_pct: 100
+target:
+  entity_id: light.LIGHTNAMEHERE
+enabled: true
+```	
 	
 [**More on automations here**](https://www.home-assistant.io/docs/automation/)	
 
