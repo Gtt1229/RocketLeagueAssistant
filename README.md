@@ -15,6 +15,7 @@ The plugin utilizes Home Assistant's built in Webhook automation trigger with JS
 
 - [Option 1](#option-1---generate-the-base-automation-using-the-in-game-plugin-settings-window) - Use a Long-Lived Access Token to automatically create a base automation using Home Assistant's API
 - [Option 2](#option-2---create-a-new-automation-using-the-rocketleague-bakkesbaseyaml-file) - Manually copy and paste the automation YAML to create the base automation
+- [JSON Values](#json-values) - Keys and values for the JSON requests
 
 
 
@@ -106,6 +107,20 @@ enabled: true
 4. Manually create a Webhook-ID (A Webhook-ID should be treated as a password and should be randomized like one)
 5. Edit the actions respectively as shown in [Option 1](#option-1---generate-the-base-automation-using-the-in-game-plugin-settings-window) step 4
 
+### JSON Values
+
+```
+x.data /Event data (demo, goal, etc)
+x.TeamData.PlayersTeam.color.r /Player's primary color red
+x.TeamData.PlayersTeam.color.g /Player's primary color green
+x.TeamData.PlayersTeam.color.b /Player's primary color blue
+x.TeamData.PlayersTeam.score /Player's team score
+
+x.TeamData.OtherTeam.color.r /OtherTeam's primary color red
+x.TeamData.OtherTeam.color.g /OtherTeam's primary color green
+x.TeamData.OtherTeam.color.b /OtherTeam's primary color blue
+x.TeamData.OtherTeam.score /OtherTeam's score
+```
 
 ## Home Assistant Scenes Configuration to be Used in Automation(Not Required):
 
