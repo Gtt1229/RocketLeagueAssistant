@@ -94,13 +94,12 @@ void RocketLeagueAssistant::LoadHooks()
 	//
 	
 	
-	//Chat Beta - Can be used to trigger automations based on "What a save!","Nice one!", etc,etc, not implemented:
-	// 
-	//gameWrapper->HookEventWithCaller<ActorWrapper>("Function TAGame.HUDBase_TA.OnChatMessage",
-	//	[this](ActorWrapper caller, void* params, std::string eventName) {
-	//		ChatHook(params);
-	//	});
-	//
+	/*/Chat Beta - Can be used to trigger automations based on "What a save!","Nice one!", etc,etc, not implemented:
+	gameWrapper->HookEventWithCaller<ActorWrapper>("Function TAGame.HUDBase_TA.OnChatMessage",
+		[this](ActorWrapper caller, void* params, std::string eventName) {
+			ChatHook(params);
+		});
+	/*/
 
 	//Overtime
 	gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.OnOvertimeUpdated", std::bind(&RocketLeagueAssistant::OvertimeHook, this, std::placeholders::_1));
@@ -451,48 +450,50 @@ void RocketLeagueAssistant::StatsHook(void* params)
 	}
 
 }
+
+/*
 //=================================
 // Quickchat-based automation prep. May not be implemented
-// 
-//struct ChatMessage
-//{
-//	void* PRI;
-//	void* Team;
-//	wchar_t* PlayerName;
-//	uint8_t PlayerNamePadding[0x8];
-//	wchar_t* Message;
-//	uint8_t MessagePadding[0x8];
-//	uint8_t ChatChannel;
-//	unsigned long bPreset : 1;
-//};
+struct ChatMessage
+{
+	void* PRI;
+	void* Team;
+	wchar_t* PlayerName;
+	uint8_t PlayerNamePadding[0x8];
+	wchar_t* Message;
+	uint8_t MessagePadding[0x8];
+	uint8_t ChatChannel;
+	unsigned long bPreset : 1;
+};
 
-//void RocketLeagueAssistant::ChatHook(void* params)
-//{
-//
-//	if (params)
-//	{
-//		ChatMessage* chatMessage = static_cast<ChatMessage*>(params);
-//		if (chatMessage->PlayerName == nullptr) return;
-//		std::wstring playerName(chatMessage->PlayerName);
-//		if (chatMessage->Message == nullptr) return;
-//		std::wstring message(chatMessage->Message);
-//		std::string bMessage(message.begin(), message.end());
-//		cvarManager->log("Message: " + bMessage);
-//		std::string whatasave = "Group2Message4";
-//
-//	
-//		int isWhatASave = whatasave.compare(bMessage);
-//				
-//		if (isWhatASave == 0) {
-//
-//			cvarManager->log("Get What a Saved'd");
-//
-//		}
-//	}
-//
-//}
+void RocketLeagueAssistant::ChatHook(void* params)
+{
+
+	if (params)
+	{
+		ChatMessage* chatMessage = static_cast<ChatMessage*>(params);
+		if (chatMessage->PlayerName == nullptr) return;
+		std::wstring playerName(chatMessage->PlayerName);
+		if (chatMessage->Message == nullptr) return;
+		std::wstring message(chatMessage->Message);
+		std::string bMessage(message.begin(), message.end());
+		cvarManager->log("Message: " + bMessage);
+		//std::string whatasave = "Group2Message4";
+		//
+		//
+		//int isWhatASave = whatasave.compare(bMessage);
+		//		
+		//if (isWhatASave == 0) {
+		//
+		//	cvarManager->log("Get What a Saved'd");
+		//
+		//}
+	}
+
+}
 //=================================
-//
+*/
+
 
 void RocketLeagueAssistant::FreeplayHook()
 {
@@ -655,7 +656,7 @@ void RocketLeagueAssistant::UpdateModal()
 	updateModal.SetColor(255, 157, 147);
 	updateModal.SetBody(R"T(Rocket League Assistant has changed its default functionality to utilize JSON based requests.
 	
-Going forward, JSON will be utilized and seperate webhook are no longer available. To continue using seperate webhook, please visit the GitHub and compile a version less than v3.0.
+Going forward, JSON will be utilized and seperate webhook are no longer available. To continue using seperate webhook, please visit the GitHub and compile a version less than v2.2.
 
 Additionally, the team color JSON keys have been changed.
 
@@ -686,10 +687,10 @@ https://github.com/Gtt1229/RocketLeagueAssistant )T");
 //
 //}
 
-void RocketLeagueAssistant::OnInput(const std::string& input, bool was_closed)
-{
-	LOG("input:: {}", input);
-}
+//void RocketLeagueAssistant::OnInput(const std::string& input, bool was_closed)
+//{
+//	LOG("input:: {}", input);
+//}
 
 void RocketLeagueAssistant::modalClosed(std::string name) {
 

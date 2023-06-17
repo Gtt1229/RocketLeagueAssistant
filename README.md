@@ -15,6 +15,7 @@ The plugin utilizes Home Assistant's built in Webhook automation trigger with JS
 
 - [Option 1](#option-1---generate-the-base-automation-using-the-in-game-plugin-settings-window) - Use a Long-Lived Access Token to automatically create a base automation using Home Assistant's API
 - [Option 2](#option-2---create-a-new-automation-using-the-rocketleague-bakkesbaseyaml-file) - Manually copy and paste the automation YAML to create the base automation
+- [JSON Values](#json-values) - Keys and values for the JSON requests
 
 
 
@@ -35,7 +36,7 @@ The plugin utilizes Home Assistant's built in Webhook automation trigger with JS
 	![HATokenStep2](https://user-images.githubusercontent.com/23534272/234130913-ce4de667-c4f3-452b-8b1e-2f70fc499f34.png)
 	
    You will now have a token similar to this:
-   ```eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI5NTgxMmNlMWIyYmI0OTRhYTIzN2U0NjNiOTIwMmU5MSIsImlhdCI6MTY4MjM2NzE2OSwiZXhwIjoxOTk3NzI3MTY5fQ.9gdUfsDoYXyTPtqi4vIZ0vuRPFZ-fUrSum_4BxEGzcw```
+   `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI5NTgxMmNlMWIyYmI0OTRhYTIzN2U0NjNiOTIwMmU5MSIsImlhdCI6MTY4MjM2NzE2OSwiZXhwIjoxOTk3NzI3MTY5fQ.9gdUfsDoYXyTPtqi4vIZ0vuRPFZ-fUrSum_4BxEGzcw`
    ***You may want to temporarily paste the code into Notepad or the URL bar***
 
 2. **Use the Template Generator in the plugin's setting window**:
@@ -67,24 +68,35 @@ The plugin utilizes Home Assistant's built in Webhook automation trigger with JS
 	
 	a. Select **Call a service** as your action then edit in YAML.
 	
-	This will set the color of your lights to the values of your team's primary color. Populate "LIGHTNAMEHERE" with the corresponding entity ID:
-
-```
+This will set the color of your lights to the values of your team's primary color. Populate "LIGHTNAMEHERE" with the corresponding entity ID
+```YAML
 service: light.turn_on
 data:
   rgb_color:
-    - "{{ trigger.json.teamColor[0].r |int }}"
-    - "{{ trigger.json.teamColor[0].g |int }}"
-    - "{{ trigger.json.teamColor[0].B |int }}"
+    - "{{ trigger.json.TeamData.PlayersTeam.color.r |int }}"
+    - "{{ trigger.json.TeamData.PlayersTeam.color.g |int }}"
+    - "{{ trigger.json.TeamData.PlayersTeam.color.b |int }}"
 target:
   entity_id: light.LIGHTNAMEHERE
 enabled: true
 ```
 
-![HATeamColorEx](https://user-images.githubusercontent.com/23534272/234131035-115831c2-e365-44be-be14-7884b1da742b.png)
+This will set the color of your lights to brighter values of your team's primary color (Useful for Goals/Demos). Populate "LIGHTNAMEHERE" with the corresponding entity ID:
+```YAML
+service: light.turn_on
+data:
+  rgb_color: >
+     {% set r = trigger.json.TeamData.PlayersTeam.color.r | int %}
+     {% set g = trigger.json.TeamData.PlayersTeam.color.g | int %}
+     {% set b = trigger.json.TeamData.PlayersTeam.color.b | int %}
+     {% macro adjust(color) %} {{ color + (255 - color) / 2 }} {% endmacro %}
+     {{ [ adjust(r), adjust(g), adjust(b) ] | join(',') }}
+  brightness_pct: 100
+target:
+  entity_id: light.LIGHTNAMEHERE
+enabled: true
+```
 
-	
-	
 [**More on automations here**](https://www.home-assistant.io/docs/automation/)	
 
 ### Option 2 - Create a new automation using the [**RocketLeague-BakkesBase.yaml**](RocketLeague-BakkesBase.yaml) file.
@@ -95,6 +107,20 @@ enabled: true
 4. Manually create a Webhook-ID (A Webhook-ID should be treated as a password and should be randomized like one)
 5. Edit the actions respectively as shown in [Option 1](#option-1---generate-the-base-automation-using-the-in-game-plugin-settings-window) step 4
 
+### JSON Values
+
+```
+x.data /Event data (demo, goal, etc)
+x.TeamData.PlayersTeam.color.r /Player's primary color red
+x.TeamData.PlayersTeam.color.g /Player's primary color green
+x.TeamData.PlayersTeam.color.b /Player's primary color blue
+x.TeamData.PlayersTeam.score /Player's team score
+
+x.TeamData.OtherTeam.color.r /OtherTeam's primary color red
+x.TeamData.OtherTeam.color.g /OtherTeam's primary color green
+x.TeamData.OtherTeam.color.b /OtherTeam's primary color blue
+x.TeamData.OtherTeam.score /OtherTeam's score
+```
 
 ## Home Assistant Scenes Configuration to be Used in Automation(Not Required):
 
