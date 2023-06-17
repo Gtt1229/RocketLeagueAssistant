@@ -32,15 +32,12 @@ public:
 	void ExitHook(std::string name);
 	void Replay(std::string name);
 	void NotReplay(std::string name);
-	void SendCommands(std::string event);
+	void SendCommands(std::string reqUrl, std::string event);
 	std::string GenWebHook();
 	std::string GenAutomationID();
-	void CreateAutomation(bool version7bool);
+	void CreateAutomation(std::string webhookURL, std::string automationID);
 	void UpdateModal();
 	void modalClosed(std::string name);
-	int GetScore(int teamNum);
-	void GetHAVersion();
-	//void OnInput(const std::string& input, bool was_closed);
 
 
 	//GUI

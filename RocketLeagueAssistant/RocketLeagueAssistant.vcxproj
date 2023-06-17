@@ -119,7 +119,6 @@
     <ClCompile Include="SendCommands.cpp" />
     <ClCompile Include="RandomAlphaNumeric.cpp" />
     <ClCompile Include="CreateAutomationBase.cpp" />
-    <ClCompile Include="GetHAVersion.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui_stdlib.h" />
