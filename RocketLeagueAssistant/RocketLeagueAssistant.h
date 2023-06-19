@@ -40,7 +40,7 @@ public:
 	void modalClosed(std::string name);
 	int GetScore(int teamNum);
 	void GetHAVersion();
-	void OnInput(const std::string& input, bool was_closed);
+	//void OnInput(const std::string& input, bool was_closed);
 
 
 	//GUI
