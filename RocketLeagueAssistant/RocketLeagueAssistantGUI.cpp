@@ -8,7 +8,7 @@
 
 // Plugin Settings Window code here
 std::string RocketLeagueAssistant::GetPluginName() {
-	return "RocketLeagueAssistant BETA";
+	return "RocketLeagueAssistant";
 }
 
 void RocketLeagueAssistant::SetImGuiContext(uintptr_t ctx) {
