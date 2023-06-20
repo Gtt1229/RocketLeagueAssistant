@@ -1,0 +1,3 @@
+LightColorChanger
+1|Enable Plugin|ha_enabled
+12|http://192.168.1.256:8123/api/webhook/webhook-light-example|h_a
