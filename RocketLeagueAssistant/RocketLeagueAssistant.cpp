@@ -36,7 +36,7 @@ void RocketLeagueAssistant::onLoad()
 
 	//HA version CVAR, only used for automation creation to confirm if the new webhook methods are needed
 	cvarManager->registerCvar("version7", "false", "Version 2023.7 and up", true, true, 0, true, 1);
-
+	
 	//URL Cvars
 	cvarManager->registerCvar("ha_haBaseURL", "http://192.168.1.256:8123");
 	cvarManager->registerCvar("ha_jsonURL", "http://192.168.1.256:8123/api/webhook/webhook-light-example-json");
