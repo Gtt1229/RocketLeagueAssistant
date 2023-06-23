@@ -1,0 +1,1134 @@
+[
+  {
+    "id": "e58fe9d46883b521",
+    "type": "tab",
+    "label": "Flow 1",
+    "disabled": false,
+    "info": "",
+    "env": []
+  },
+  {
+    "id": "e5bd89b890a0add2",
+    "type": "group",
+    "z": "e58fe9d46883b521",
+    "name": "ConvertPayload",
+    "style": {
+      "stroke": "none",
+      "fill": "#e3f3d3",
+      "label": true
+    },
+    "nodes": [
+      "3989ecbd911a263a",
+      "b0cfd3a19649aaed",
+      "592a6de526edec79",
+      "bee573869dadab90",
+      "4bc92a2ce867b21a",
+      "2128e79ce524429e",
+      "3cbe3c0e0b9cfd71",
+      "786176bc216ee18a",
+      "c6da0e087a228e09",
+      "3e5b52e41fae8903"
+    ],
+    "x": 720.5,
+    "y": 239,
+    "w": 332,
+    "h": 1022
+  },
+  {
+    "id": "3c897a3500a32f30",
+    "type": "group",
+    "z": "e58fe9d46883b521",
+    "name": "Adjusts the Team Color Values Slightly",
+    "style": {
+      "stroke": "none",
+      "fill": "#bfdbef",
+      "label": true
+    },
+    "nodes": [
+      "87fd8f1184f58297",
+      "d232d0e2c5aa0d7c",
+      "9b21168d4009f4b5",
+      "981d74abdc69768d",
+      "e3ceae83a84655e7"
+    ],
+    "x": 1094,
+    "y": 479,
+    "w": 372,
+    "h": 442
+  },
+  {
+    "id": "f6cf721798679115",
+    "type": "junction",
+    "z": "e58fe9d46883b521",
+    "x": 640,
+    "y": 340,
+    "wires": [
+      [
+        "3989ecbd911a263a"
+      ]
+    ]
+  },
+  {
+    "id": "8dae0e2ca74ea2c3",
+    "type": "junction",
+    "z": "e58fe9d46883b521",
+    "x": 640,
+    "y": 380,
+    "wires": [
+      [
+        "3989ecbd911a263a"
+      ]
+    ]
+  },
+  {
+    "id": "fa296eb40ed9eff8",
+    "type": "junction",
+    "z": "e58fe9d46883b521",
+    "x": 640,
+    "y": 1220,
+    "wires": [
+      [
+        "c6da0e087a228e09"
+      ]
+    ]
+  },
+  {
+    "id": "b9c56a74cd603af1",
+    "type": "junction",
+    "z": "e58fe9d46883b521",
+    "x": 640,
+    "y": 1100,
+    "wires": [
+      [
+        "786176bc216ee18a"
+      ]
+    ]
+  },
+  {
+    "id": "d514db3f10cf29df",
+    "type": "junction",
+    "z": "e58fe9d46883b521",
+    "x": 640,
+    "y": 1020,
+    "wires": [
+      [
+        "3cbe3c0e0b9cfd71"
+      ]
+    ]
+  },
+  {
+    "id": "95e32f5b38ed3f26",
+    "type": "junction",
+    "z": "e58fe9d46883b521",
+    "x": 640,
+    "y": 900,
+    "wires": [
+      [
+        "2128e79ce524429e"
+      ]
+    ]
+  },
+  {
+    "id": "538e1f623c4310b1",
+    "type": "junction",
+    "z": "e58fe9d46883b521",
+    "x": 640,
+    "y": 780,
+    "wires": [
+      [
+        "4bc92a2ce867b21a"
+      ]
+    ]
+  },
+  {
+    "id": "4692537405e1ce1f",
+    "type": "junction",
+    "z": "e58fe9d46883b521",
+    "x": 640,
+    "y": 660,
+    "wires": [
+      [
+        "bee573869dadab90"
+      ]
+    ]
+  },
+  {
+    "id": "5d6a774e26d3d192",
+    "type": "junction",
+    "z": "e58fe9d46883b521",
+    "x": 640,
+    "y": 440,
+    "wires": [
+      [
+        "3e5b52e41fae8903"
+      ]
+    ]
+  },
+  {
+    "id": "0218c3df1eb5aa8d",
+    "type": "ha-webhook",
+    "z": "e58fe9d46883b521",
+    "name": "WebhookInsert",
+    "server": "c4acbb9e.94dd38",
+    "version": 1,
+    "outputs": 1,
+    "webhookId": "REGENERATE",
+    "outputProperties": [
+      {
+        "property": "payload",
+        "propertyType": "msg",
+        "value": "",
+        "valueType": "data"
+      }
+    ],
+    "payloadLocation": false,
+    "payloadLocationType": false,
+    "headersLocation": false,
+    "headersLocationType": false,
+    "x": 180,
+    "y": 580,
+    "wires": [
+      [
+        "025f97cb3a90c3b7"
+      ]
+    ]
+  },
+  {
+    "id": "025f97cb3a90c3b7",
+    "type": "switch",
+    "z": "e58fe9d46883b521",
+    "name": "",
+    "property": "payload.data",
+    "propertyType": "msg",
+    "rules": [
+      {
+        "t": "eq",
+        "v": "home",
+        "vt": "str"
+      },
+      {
+        "t": "eq",
+        "v": "away",
+        "vt": "str"
+      },
+      {
+        "t": "eq",
+        "v": "mainmenu",
+        "vt": "str"
+      },
+      {
+        "t": "eq",
+        "v": "teamScored",
+        "vt": "str"
+      },
+      {
+        "t": "eq",
+        "v": "otherTeamScored",
+        "vt": "str"
+      },
+      {
+        "t": "eq",
+        "v": "teamDemoed",
+        "vt": "str"
+      },
+      {
+        "t": "eq",
+        "v": "gotDemoed",
+        "vt": "str"
+      },
+      {
+        "t": "eq",
+        "v": "freeplay",
+        "vt": "str"
+      },
+      {
+        "t": "eq",
+        "v": "overtime",
+        "vt": "str"
+      },
+      {
+        "t": "eq",
+        "v": "exit",
+        "vt": "str"
+      }
+    ],
+    "checkall": "true",
+    "repair": true,
+    "outputs": 10,
+    "x": 390,
+    "y": 580,
+    "wires": [
+      [
+        "f6cf721798679115"
+      ],
+      [
+        "8dae0e2ca74ea2c3"
+      ],
+      [
+        "5d6a774e26d3d192"
+      ],
+      [
+        "592a6de526edec79"
+      ],
+      [
+        "4692537405e1ce1f"
+      ],
+      [
+        "538e1f623c4310b1"
+      ],
+      [
+        "95e32f5b38ed3f26"
+      ],
+      [
+        "d514db3f10cf29df"
+      ],
+      [
+        "b9c56a74cd603af1"
+      ],
+      [
+        "fa296eb40ed9eff8"
+      ]
+    ],
+    "outputLabels": [
+      "TeamColor",
+      "TeamColor",
+      "MainMenu",
+      "TeamScored",
+      "OtherTeamScored",
+      "TeamDemoed",
+      "GotDemoed",
+      "FreePlay",
+      "OverTime",
+      "Exit"
+    ]
+  },
+  {
+    "id": "9ff41b258d2ba03b",
+    "type": "api-call-service",
+    "z": "e58fe9d46883b521",
+    "name": "TeamLightColor",
+    "server": "c4acbb9e.94dd38",
+    "version": 5,
+    "debugenabled": true,
+    "domain": "light",
+    "service": "turn_on",
+    "areaId": [],
+    "deviceId": [],
+    "entityId": [
+      "light.LIGHTENTITY"
+    ],
+    "data": "{\"rgb_color\":[msg.r,msg.g,msg.b]}",
+    "dataType": "jsonata",
+    "mergeContext": "",
+    "mustacheAltTags": false,
+    "outputProperties": [],
+    "queue": "none",
+    "x": 1940,
+    "y": 340,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "3989ecbd911a263a",
+    "type": "change",
+    "z": "e58fe9d46883b521",
+    "g": "e5bd89b890a0add2",
+    "name": "ConvertPayload",
+    "rules": [
+      {
+        "t": "move",
+        "p": "payload.TeamData.PlayersTeam.color.r",
+        "pt": "msg",
+        "to": "r",
+        "tot": "msg"
+      },
+      {
+        "t": "move",
+        "p": "payload.TeamData.PlayersTeam.color.g",
+        "pt": "msg",
+        "to": "g",
+        "tot": "msg"
+      },
+      {
+        "t": "move",
+        "p": "payload.TeamData.PlayersTeam.color.b",
+        "pt": "msg",
+        "to": "b",
+        "tot": "msg"
+      },
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "",
+        "tot": "str"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 886.5,
+    "y": 340,
+    "wires": [
+      [
+        "9ff41b258d2ba03b"
+      ]
+    ]
+  },
+  {
+    "id": "f917a5029672d722",
+    "type": "api-call-service",
+    "z": "e58fe9d46883b521",
+    "name": "MainMenuLightColor",
+    "server": "c4acbb9e.94dd38",
+    "version": 5,
+    "debugenabled": true,
+    "domain": "light",
+    "service": "turn_on",
+    "areaId": [],
+    "deviceId": [],
+    "entityId": [
+      "light.LIGHTENTITY"
+    ],
+    "data": "{\"rgb_color\":[153, 255, 254]}",
+    "dataType": "jsonata",
+    "mergeContext": "",
+    "mustacheAltTags": false,
+    "outputProperties": [],
+    "queue": "none",
+    "x": 1960,
+    "y": 440,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "c4bdb7928493bbb6",
+    "type": "api-call-service",
+    "z": "e58fe9d46883b521",
+    "name": "TeamScoredLightColor",
+    "server": "c4acbb9e.94dd38",
+    "version": 5,
+    "debugenabled": true,
+    "domain": "light",
+    "service": "turn_on",
+    "areaId": [],
+    "deviceId": [],
+    "entityId": [
+      "light.LIGHTENTITY"
+    ],
+    "data": "{\"rgb_color\":[msg.rChange,msg.gChange,msg.bChange]}",
+    "dataType": "jsonata",
+    "mergeContext": "",
+    "mustacheAltTags": false,
+    "outputProperties": [],
+    "queue": "none",
+    "x": 1970,
+    "y": 560,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "98dc203a832bdcc0",
+    "type": "api-call-service",
+    "z": "e58fe9d46883b521",
+    "name": "OtherTeamScoredLightColor",
+    "server": "c4acbb9e.94dd38",
+    "version": 5,
+    "debugenabled": true,
+    "domain": "light",
+    "service": "turn_on",
+    "areaId": [],
+    "deviceId": [],
+    "entityId": [
+      "light.LIGHTENTITY"
+    ],
+    "data": "{\"rgb_color\":[msg.rChange,msg.gChange,msg.bChange]}",
+    "dataType": "jsonata",
+    "mergeContext": "",
+    "mustacheAltTags": false,
+    "outputProperties": [],
+    "queue": "none",
+    "x": 1980,
+    "y": 660,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "3b392775a7c766b1",
+    "type": "api-call-service",
+    "z": "e58fe9d46883b521",
+    "name": "TeamDemoedColor",
+    "server": "c4acbb9e.94dd38",
+    "version": 5,
+    "debugenabled": true,
+    "domain": "light",
+    "service": "turn_on",
+    "areaId": [],
+    "deviceId": [],
+    "entityId": [
+      "light.LIGHTENTITY"
+    ],
+    "data": "{\"rgb_color\":[255, 190, 0]}",
+    "dataType": "jsonata",
+    "mergeContext": "",
+    "mustacheAltTags": false,
+    "outputProperties": [],
+    "queue": "none",
+    "x": 1950,
+    "y": 780,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "c539ec0a18ff1924",
+    "type": "api-call-service",
+    "z": "e58fe9d46883b521",
+    "name": "GotDemoedLightColor",
+    "server": "c4acbb9e.94dd38",
+    "version": 5,
+    "debugenabled": true,
+    "domain": "light",
+    "service": "turn_on",
+    "areaId": [],
+    "deviceId": [],
+    "entityId": [
+      "light.LIGHTENTITY"
+    ],
+    "data": "{\"rgb_color\":[255, 190, 0]}",
+    "dataType": "jsonata",
+    "mergeContext": "",
+    "mustacheAltTags": false,
+    "outputProperties": [],
+    "queue": "none",
+    "x": 1960,
+    "y": 900,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "11f8dde14413c037",
+    "type": "api-call-service",
+    "z": "e58fe9d46883b521",
+    "name": "FreePlayLightColor",
+    "server": "c4acbb9e.94dd38",
+    "version": 5,
+    "debugenabled": true,
+    "domain": "light",
+    "service": "turn_on",
+    "areaId": [],
+    "deviceId": [],
+    "entityId": [
+      "light.LIGHTENTITY"
+    ],
+    "data": "{\"rgb_color\":[255, 40, 254]}",
+    "dataType": "jsonata",
+    "mergeContext": "",
+    "mustacheAltTags": false,
+    "outputProperties": [],
+    "queue": "none",
+    "x": 1950,
+    "y": 1020,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "d0ad32f6be891b60",
+    "type": "api-call-service",
+    "z": "e58fe9d46883b521",
+    "name": "OverTimeLightColor",
+    "server": "c4acbb9e.94dd38",
+    "version": 5,
+    "debugenabled": true,
+    "domain": "light",
+    "service": "turn_on",
+    "areaId": [],
+    "deviceId": [],
+    "entityId": [
+      "light.LIGHTENTITY"
+    ],
+    "data": "{\"rgb_color\":[255, 40, 254]}",
+    "dataType": "jsonata",
+    "mergeContext": "",
+    "mustacheAltTags": false,
+    "outputProperties": [],
+    "queue": "none",
+    "x": 1960,
+    "y": 1100,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "9eda485e20a0174c",
+    "type": "api-call-service",
+    "z": "e58fe9d46883b521",
+    "name": "ExitLightColor",
+    "server": "c4acbb9e.94dd38",
+    "version": 5,
+    "debugenabled": true,
+    "domain": "light",
+    "service": "turn_on",
+    "areaId": [],
+    "deviceId": [],
+    "entityId": [
+      "light.LIGHTENTITY"
+    ],
+    "data": "{\"kelvin\":3533,\"brightness_pct\":\"100\"}",
+    "dataType": "jsonata",
+    "mergeContext": "",
+    "mustacheAltTags": false,
+    "outputProperties": [],
+    "queue": "none",
+    "x": 1940,
+    "y": 1220,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "b0cfd3a19649aaed",
+    "type": "comment",
+    "z": "e58fe9d46883b521",
+    "g": "e5bd89b890a0add2",
+    "name": "Convert Payload to RGB payloads",
+    "info": "",
+    "x": 886.5,
+    "y": 280,
+    "wires": []
+  },
+  {
+    "id": "87fd8f1184f58297",
+    "type": "change",
+    "z": "e58fe9d46883b521",
+    "g": "3c897a3500a32f30",
+    "name": "HomeGoalColorAdjust",
+    "rules": [
+      {
+        "t": "set",
+        "p": "rChange",
+        "pt": "msg",
+        "to": "msg.r + ( 255 - msg.r ) / 2",
+        "tot": "jsonata"
+      },
+      {
+        "t": "set",
+        "p": "gChange",
+        "pt": "msg",
+        "to": "msg.g + ( 255 - msg.g ) / 2",
+        "tot": "jsonata"
+      },
+      {
+        "t": "set",
+        "p": "bChange",
+        "pt": "msg",
+        "to": "msg.b + ( 255 - msg.b ) / 2",
+        "tot": "jsonata"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 1220,
+    "y": 560,
+    "wires": [
+      [
+        "c4bdb7928493bbb6"
+      ]
+    ]
+  },
+  {
+    "id": "592a6de526edec79",
+    "type": "change",
+    "z": "e58fe9d46883b521",
+    "g": "e5bd89b890a0add2",
+    "name": "ConvertPayload",
+    "rules": [
+      {
+        "t": "move",
+        "p": "payload.TeamData.PlayersTeam.color.r",
+        "pt": "msg",
+        "to": "r",
+        "tot": "msg"
+      },
+      {
+        "t": "move",
+        "p": "payload.TeamData.PlayersTeam.color.g",
+        "pt": "msg",
+        "to": "g",
+        "tot": "msg"
+      },
+      {
+        "t": "move",
+        "p": "payload.TeamData.PlayersTeam.color.b",
+        "pt": "msg",
+        "to": "b",
+        "tot": "msg"
+      },
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "",
+        "tot": "str"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 886.5,
+    "y": 560,
+    "wires": [
+      [
+        "87fd8f1184f58297"
+      ]
+    ]
+  },
+  {
+    "id": "bee573869dadab90",
+    "type": "change",
+    "z": "e58fe9d46883b521",
+    "g": "e5bd89b890a0add2",
+    "name": "ConvertPayloadOtherTeamColor",
+    "rules": [
+      {
+        "t": "move",
+        "p": "payload.TeamData.OtherTeam.color.r",
+        "pt": "msg",
+        "to": "r",
+        "tot": "msg"
+      },
+      {
+        "t": "move",
+        "p": "payload.TeamData.OtherTeam.color.g",
+        "pt": "msg",
+        "to": "g",
+        "tot": "msg"
+      },
+      {
+        "t": "move",
+        "p": "payload.TeamData.OtherTeam.color.b",
+        "pt": "msg",
+        "to": "b",
+        "tot": "msg"
+      },
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "",
+        "tot": "str"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 886.5,
+    "y": 660,
+    "wires": [
+      [
+        "d232d0e2c5aa0d7c"
+      ]
+    ]
+  },
+  {
+    "id": "4bc92a2ce867b21a",
+    "type": "change",
+    "z": "e58fe9d46883b521",
+    "g": "e5bd89b890a0add2",
+    "name": "ConvertPayload",
+    "rules": [
+      {
+        "t": "move",
+        "p": "payload.TeamData.PlayersTeam.color.r",
+        "pt": "msg",
+        "to": "r",
+        "tot": "msg"
+      },
+      {
+        "t": "move",
+        "p": "payload.TeamData.PlayersTeam.color.g",
+        "pt": "msg",
+        "to": "g",
+        "tot": "msg"
+      },
+      {
+        "t": "move",
+        "p": "payload.TeamData.PlayersTeam.color.b",
+        "pt": "msg",
+        "to": "b",
+        "tot": "msg"
+      },
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "",
+        "tot": "str"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 886.5,
+    "y": 780,
+    "wires": [
+      [
+        "3b392775a7c766b1"
+      ]
+    ]
+  },
+  {
+    "id": "2128e79ce524429e",
+    "type": "change",
+    "z": "e58fe9d46883b521",
+    "g": "e5bd89b890a0add2",
+    "name": "ConvertPayload",
+    "rules": [
+      {
+        "t": "move",
+        "p": "payload.TeamData.PlayersTeam.color.r",
+        "pt": "msg",
+        "to": "r",
+        "tot": "msg"
+      },
+      {
+        "t": "move",
+        "p": "payload.TeamData.PlayersTeam.color.g",
+        "pt": "msg",
+        "to": "g",
+        "tot": "msg"
+      },
+      {
+        "t": "move",
+        "p": "payload.TeamData.PlayersTeam.color.b",
+        "pt": "msg",
+        "to": "b",
+        "tot": "msg"
+      },
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "",
+        "tot": "str"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 886.5,
+    "y": 900,
+    "wires": [
+      [
+        "c539ec0a18ff1924"
+      ]
+    ]
+  },
+  {
+    "id": "3cbe3c0e0b9cfd71",
+    "type": "change",
+    "z": "e58fe9d46883b521",
+    "g": "e5bd89b890a0add2",
+    "name": "ConvertPayload",
+    "rules": [
+      {
+        "t": "move",
+        "p": "payload.TeamData.PlayersTeam.color.r",
+        "pt": "msg",
+        "to": "r",
+        "tot": "msg"
+      },
+      {
+        "t": "move",
+        "p": "payload.TeamData.PlayersTeam.color.g",
+        "pt": "msg",
+        "to": "g",
+        "tot": "msg"
+      },
+      {
+        "t": "move",
+        "p": "payload.TeamData.PlayersTeam.color.b",
+        "pt": "msg",
+        "to": "b",
+        "tot": "msg"
+      },
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "",
+        "tot": "str"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 886.5,
+    "y": 1020,
+    "wires": [
+      [
+        "11f8dde14413c037"
+      ]
+    ]
+  },
+  {
+    "id": "786176bc216ee18a",
+    "type": "change",
+    "z": "e58fe9d46883b521",
+    "g": "e5bd89b890a0add2",
+    "name": "ConvertPayload",
+    "rules": [
+      {
+        "t": "move",
+        "p": "payload.TeamData.PlayersTeam.color.r",
+        "pt": "msg",
+        "to": "r",
+        "tot": "msg"
+      },
+      {
+        "t": "move",
+        "p": "payload.TeamData.PlayersTeam.color.g",
+        "pt": "msg",
+        "to": "g",
+        "tot": "msg"
+      },
+      {
+        "t": "move",
+        "p": "payload.TeamData.PlayersTeam.color.b",
+        "pt": "msg",
+        "to": "b",
+        "tot": "msg"
+      },
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "",
+        "tot": "str"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 886.5,
+    "y": 1100,
+    "wires": [
+      [
+        "d0ad32f6be891b60"
+      ]
+    ]
+  },
+  {
+    "id": "c6da0e087a228e09",
+    "type": "change",
+    "z": "e58fe9d46883b521",
+    "g": "e5bd89b890a0add2",
+    "name": "ConvertPayload",
+    "rules": [
+      {
+        "t": "move",
+        "p": "payload.TeamData.PlayersTeam.color.r",
+        "pt": "msg",
+        "to": "r",
+        "tot": "msg"
+      },
+      {
+        "t": "move",
+        "p": "payload.TeamData.PlayersTeam.color.g",
+        "pt": "msg",
+        "to": "g",
+        "tot": "msg"
+      },
+      {
+        "t": "move",
+        "p": "payload.TeamData.PlayersTeam.color.b",
+        "pt": "msg",
+        "to": "b",
+        "tot": "msg"
+      },
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "",
+        "tot": "str"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 886.5,
+    "y": 1220,
+    "wires": [
+      [
+        "9eda485e20a0174c"
+      ]
+    ]
+  },
+  {
+    "id": "d232d0e2c5aa0d7c",
+    "type": "change",
+    "z": "e58fe9d46883b521",
+    "g": "3c897a3500a32f30",
+    "name": "OtherTeamGoalColorAdjust",
+    "rules": [
+      {
+        "t": "set",
+        "p": "rChange",
+        "pt": "msg",
+        "to": "msg.r + ( 255 - msg.r ) / 2",
+        "tot": "jsonata"
+      },
+      {
+        "t": "set",
+        "p": "gChange",
+        "pt": "msg",
+        "to": "msg.g + ( 255 - msg.g ) / 2",
+        "tot": "jsonata"
+      },
+      {
+        "t": "set",
+        "p": "bChange",
+        "pt": "msg",
+        "to": "msg.b + ( 255 - msg.b ) / 2",
+        "tot": "jsonata"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 1240,
+    "y": 660,
+    "wires": [
+      [
+        "98dc203a832bdcc0"
+      ]
+    ]
+  },
+  {
+    "id": "3e5b52e41fae8903",
+    "type": "change",
+    "z": "e58fe9d46883b521",
+    "g": "e5bd89b890a0add2",
+    "name": "ConvertPayload",
+    "rules": [
+      {
+        "t": "move",
+        "p": "payload.TeamData.PlayersTeam.color.r",
+        "pt": "msg",
+        "to": "r",
+        "tot": "msg"
+      },
+      {
+        "t": "move",
+        "p": "payload.TeamData.PlayersTeam.color.g",
+        "pt": "msg",
+        "to": "g",
+        "tot": "msg"
+      },
+      {
+        "t": "move",
+        "p": "payload.TeamData.PlayersTeam.color.b",
+        "pt": "msg",
+        "to": "b",
+        "tot": "msg"
+      },
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "",
+        "tot": "str"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 886.5,
+    "y": 440,
+    "wires": [
+      [
+        "f917a5029672d722"
+      ]
+    ]
+  },
+  {
+    "id": "9b21168d4009f4b5",
+    "type": "comment",
+    "z": "e58fe9d46883b521",
+    "g": "3c897a3500a32f30",
+    "name": "Makes Player Team Color Brighter",
+    "info": "",
+    "x": 1300,
+    "y": 520,
+    "wires": []
+  },
+  {
+    "id": "981d74abdc69768d",
+    "type": "comment",
+    "z": "e58fe9d46883b521",
+    "g": "3c897a3500a32f30",
+    "name": "Makes Other Team Color Brighter",
+    "info": "",
+    "x": 1300,
+    "y": 620,
+    "wires": []
+  },
+  {
+    "id": "e3ceae83a84655e7",
+    "type": "comment",
+    "z": "e58fe9d46883b521",
+    "g": "3c897a3500a32f30",
+    "name": "Can also be used for Demo's",
+    "info": "Make sure you copy the ConvertPayloadOtherTeamColor if you plan to use the other team's color's for demo's",
+    "x": 1280,
+    "y": 880,
+    "wires": []
+  },
+  {
+    "id": "ecda9e6efeae92fa",
+    "type": "comment",
+    "z": "e58fe9d46883b521",
+    "name": "REGENERATE WEBHOOK URL!",
+    "info": "",
+    "x": 180,
+    "y": 540,
+    "wires": [],
+    "icon": "node-red/alert.svg"
+  },
+  {
+    "id": "c4acbb9e.94dd38",
+    "type": "server",
+    "name": "Home Assistant",
+    "addon": true
+  }
+]
