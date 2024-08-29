@@ -30,7 +30,7 @@ void RocketLeagueAssistant::onLoad()
 	cvarManager->registerCvar("freeplay_enabled", "1", "Enable Freeplay Webhook", true, true, 0, true, 1);
 	cvarManager->registerCvar("mainmenu_enabled", "1", "Enable Mainemenu Webhook", true, true, 0, true, 1);
 	cvarManager->registerCvar("overtime_enabled", "1", "Enable Overtime Webhook", true, true, 0, true, 1);
-	cvarManager->registerCvar("matchcountdown_enabled", "1", "Enable Match Countdown Webhook", true, true, 0, true, 1);
+	cvarManager->registerCvar("matchCountdown_enabled", "1", "Enable Match Countdown Webhook", true, true, 0, true, 1);
 	cvarManager->registerCvar("exit_enabled", "1", "Enable Exit Webhook", true, true, 0, true, 1);
 	cvarManager->registerCvar("isReplay", "0", "Replay boolean", true, true, 0, true, 1);
 	cvarManager->registerCvar("hideURL", "false", "HideURL boolean", true, true, 0, true, 1);
@@ -562,9 +562,9 @@ void RocketLeagueAssistant::MatchCountdownHook(std::string name)
 	if (!enabled) { LOG("RocketLeagueAssistant is not enabled"); return; }
 
 	//See if MatchCountdown Hooks are enabled
-	CVarWrapper matchcountdown_enabledCvar = cvarManager->getCvar("matchcountdown_enabled");
-	bool matchcountdown_enabled = matchcountdown_enabledCvar.getBoolValue();
-	if (!matchcountdown_enabled) { LOG("Match Countdown Automations are not enabled"); return; }
+	CVarWrapper matchCountdown_enabledCvar = cvarManager->getCvar("matchCountdown_enabled");
+	bool matchCountdown_enabled = matchCountdown_enabledCvar.getBoolValue();
+	if (!matchCountdown_enabled) { LOG("Match Countdown Automations are not enabled"); return; }
 
 	//Get MatchCountdown automation url, transform, and convert to string
 	std::string event = "matchcountdown";

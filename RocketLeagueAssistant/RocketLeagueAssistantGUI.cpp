@@ -175,7 +175,7 @@ void RocketLeagueAssistant::RenderSettings() {
 		//matchCountdownEnableCvar hook Gui
 	
 		bool matchCountdownEnabled = matchCountdownEnableCvar.getBoolValue();
-
+		
 		if (ImGui::Checkbox("Enable Match Countdown Webhook", &matchCountdownEnabled)) {
 			matchCountdownEnableCvar.setValue(matchCountdownEnabled);
 		}
