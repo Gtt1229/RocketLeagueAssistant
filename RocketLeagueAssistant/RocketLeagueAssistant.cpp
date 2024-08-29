@@ -116,6 +116,9 @@ void RocketLeagueAssistant::LoadHooks()
 
 	//Match Countdown
 	gameWrapper->HookEvent("Function ProjectX.OnlineGameJoinGame_X.StartJoin", std::bind(&RocketLeagueAssistant::MatchCountdownHook, this, std::placeholders::_1));
+	gameWrapper->HookEvent("Function ProjectX.OnlineGameMatchmakingBase_X.Joining.Cancel", std::bind(&RocketLeagueAssistant::MainMenuHook, this, std::placeholders::_1));
+	gameWrapper->HookEvent("Function ProjectX.OnlineGameMatchmakingBase_X.EventFindGameComplete", std::bind(&RocketLeagueAssistant::MainMenuHook, this, std::placeholders::_1));
+	
 	//
 	 
 	//On Game Exit
@@ -544,6 +547,20 @@ void RocketLeagueAssistant::MainMenuHook(std::string name)
 	CVarWrapper mainmenuEnabledCvar = cvarManager->getCvar("mainmenu_enabled");
 	bool mainmenuEnabled = mainmenuEnabledCvar.getBoolValue();
 	if (!mainmenuEnabled) { LOG("Main Menu Automations are not enabled"); return; }
+
+	//Check if player is in Freeplay (This is checked because the MainMenuHook function is called from the cancellation of matchmaking)
+	if (gameWrapper->IsInFreeplay()) {
+
+		CVarWrapper freeplayEnabledCvar = cvarManager->getCvar("freeplay_enabled");
+		bool freeplayEnabled = freeplayEnabledCvar.getBoolValue();
+
+		if (freeplayEnabled == true) {
+			LOG("Player in freeplay, using freeplay hook");
+			FreeplayHook();
+			return;
+		}
+
+	}
 
 	//Get mainmenu automation url, transform, and convert to string
 	std::string event = "mainmenu";
