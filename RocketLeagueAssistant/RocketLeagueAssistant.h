@@ -37,8 +37,11 @@ public:
 	std::string GenWebHook();
 	std::string GenAutomationID();
 	void CreateAutomation(bool version7bool);
-	void UpdateModal();
-	void modalClosed(std::string name);
+	
+	// Marked for revision in future revision
+	//void UpdateModal();
+	//void modalClosed(std::string name);
+	
 	int GetScore(int teamNum);
 	void GetHAVersion();
 	//void OnInput(const std::string& input, bool was_closed);
