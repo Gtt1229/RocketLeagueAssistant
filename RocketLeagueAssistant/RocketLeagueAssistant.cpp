@@ -16,11 +16,13 @@ std::string haurlen = "None";
 void RocketLeagueAssistant::onLoad()
 {
 
-	cvarManager->registerNotifier("rlamodel", [this](std::vector<std::string> args) {
-		 
-		UpdateModal();
-	
-		}, "", PERMISSION_ALL);
+	//cvarManager->registerNotifier("rlamodel", [this](std::vector<std::string> args) {
+	//	 
+	// Marked for removal in future revision
+	// 
+	//	UpdateModal();
+	//
+	//	}, "", PERMISSION_ALL);
 
 	//Enable Cvars
 	cvarManager->registerCvar("ha_enabled", "1", "Enable Plugin", true, true, 0, true, 1);
@@ -49,7 +51,8 @@ void RocketLeagueAssistant::onLoad()
 	cvarManager->registerCvar("ha_OtherTeamPrimaryRGBColor", "\"r\":\"255\", \"g\":\"0\", \"b\":\"0\"");
 
 	//Plugin update CVAR
-	cvarManager->registerCvar("updateModal_enabled", "false", "Enable Plugin", true, true, 0, true, 1);
+	//Marked for removal in future revision
+	// cvarManager->registerCvar("updateModal_enabled", "false", "Enable Plugin", true, true, 0, true, 1);
 
 
 	//Prep for possibly using tokens in the future for requests over https
@@ -254,11 +257,6 @@ void RocketLeagueAssistant::LoadTeams(std::string name)
 
 		CVarWrapper ha_otherTeam = cvarManager->getCvar("ha_otherTeam");
 		if (!ha_otherTeam) { return; }
-		//
-
-
-
-
 		
 
 		//Send based on home or away team
@@ -326,7 +324,6 @@ void RocketLeagueAssistant::StatsHook(void* params)
 	//See if demos are enabled
 	CVarWrapper demosEnabledCvar = cvarManager->getCvar("demos_enabled");
 	bool demosEnabled = demosEnabledCvar.getBoolValue();
-	//if (!demosEnabled) { LOG("Demos Automations are not enabled"); return; }
 	
 	//See if it is a replay
 	CVarWrapper replayCvar = cvarManager->getCvar("isReplay");
@@ -527,13 +524,14 @@ void RocketLeagueAssistant::MainMenuHook(std::string name)
 
 
 
-
-	CVarWrapper updateBoolcvar = cvarManager->getCvar("updateModal_enabled");
-	bool updateBool = updateBoolcvar.getBoolValue();
-	//LOG("Rocket League Assistant Update Boolean: {}", updateBool);
-	if (updateBool == false) {
-		UpdateModal();
-	}
+	//Marked for removal in future revision
+	// 
+	//CVarWrapper updateBoolcvar = cvarManager->getCvar("updateModal_enabled");
+	//bool updateBool = updateBoolcvar.getBoolValue();
+	////LOG("Rocket League Assistant Update Boolean: {}", updateBool);
+	//if (updateBool == false) {
+	//	UpdateModal();
+	//}
 	
 
 	//Check if plugin is enabled
@@ -669,43 +667,28 @@ void RocketLeagueAssistant::Log(std::string msg)
 	cvarManager->log(msg);
 }
 
-void RocketLeagueAssistant::UpdateModal()
-{
-	//Notify users of JSON implementation with a Modal popup
-	ModalWrapper updateModal = gameWrapper->CreateModal("Plugin Change");
-	const std::string iconName = "Texture2D gfx_shared.Icon_Warning";
-	updateModal.SetIcon(iconName);
-	updateModal.SetColor(255, 157, 147);
-	updateModal.SetBody(R"T(Rocket League Assistant has changed its default functionality to utilize JSON based requests.
-	
-Going forward, JSON will be utilized and seperate webhook are no longer available. To continue using seperate webhook, please visit the GitHub and compile a version less than v2.2.
-
-Additionally, the team color JSON keys have been changed.
-
-You can read about the changes at
-https://github.com/Gtt1229/RocketLeagueAssistant )T");
-
-	std::string name = "None";
-	updateModal.AddButton("I Understand", false, [this, name]() {this->RocketLeagueAssistant::modalClosed("I understand"); });
-	updateModal.AddButton("Open Bakkes Settings", true, [this, name]() {this->RocketLeagueAssistant::modalClosed("settings"); });
-
-}
-
 //void RocketLeagueAssistant::UpdateModal()
-//{
+//
+// Marked for removal in future revision
+// 
+// {
 //	//Notify users of JSON implementation with a Modal popup
-//	TextInputModalWrapper updateModal = gameWrapper->CreateTextInputModal("Plugin Change");
+//	ModalWrapper updateModal = gameWrapper->CreateModal("Plugin Change");
 //	const std::string iconName = "Texture2D gfx_shared.Icon_Warning";
-//		
-//	updateModal.SetTextInput("Enter text:", 30, false, [&](std::string input, bool was_closed)
-//		{
-//
-//			RocketLeagueAssistant::OnInput(input, was_closed);
-//
-//
-//		});
-//		
+//	updateModal.SetIcon(iconName);
+//	updateModal.SetColor(255, 157, 147);
+//	updateModal.SetBody(R"T(Rocket League Assistant has changed its default functionality to utilize JSON based requests.
 //	
+//Going forward, JSON will be utilized and seperate webhook are no longer available. To continue using seperate webhook, please visit the GitHub and compile a version less than v2.2.
+//
+//Additionally, the team color JSON keys have been changed.
+//
+//You can read about the changes at
+//https://github.com/Gtt1229/RocketLeagueAssistant )T");
+//
+//	std::string name = "None";
+//	updateModal.AddButton("I Understand", false, [this, name]() {this->RocketLeagueAssistant::modalClosed("I understand"); });
+//	updateModal.AddButton("Open Bakkes Settings", true, [this, name]() {this->RocketLeagueAssistant::modalClosed("settings"); });
 //
 //}
 
@@ -714,20 +697,22 @@ https://github.com/Gtt1229/RocketLeagueAssistant )T");
 //	LOG("input:: {}", input);
 //}
 
-void RocketLeagueAssistant::modalClosed(std::string name) {
-
-	CVarWrapper updateBoolcvar = cvarManager->getCvar("updateModal_enabled");
-	if (!updateBoolcvar) { return; }
-	bool updateBool = true;
-	updateBoolcvar.setValue(updateBool);
-	LOG("ModalClosed::: {}", updateBoolcvar.getBoolValue());
-
-	if (name == "settings") {
-
-		cvarManager->executeCommand("openmenu settings");
-
-	}
-	
-	return;
-	
-}
+//void RocketLeagueAssistant::modalClosed(std::string name) {
+//
+// Marked for removal in future revision
+// 
+//	CVarWrapper updateBoolcvar = cvarManager->getCvar("updateModal_enabled");
+//	if (!updateBoolcvar) { return; }
+//	bool updateBool = true;
+//	updateBoolcvar.setValue(updateBool);
+//	LOG("ModalClosed::: {}", updateBoolcvar.getBoolValue());
+//
+//	if (name == "settings") {
+//
+//		cvarManager->executeCommand("openmenu settings");
+//
+//	}
+//	
+//	return;
+//	
+//}

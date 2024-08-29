@@ -110,6 +110,16 @@ void RocketLeagueAssistant::CreateAutomation(bool version7bool)
           "conditions": [
             {
               "condition": "template",
+              "value_template": "{{ trigger.json.data == 'matchcountdown' }}",
+              "alias": "Match Countdown Automation"
+            }
+          ],
+          "sequence": []
+        },
+        {
+          "conditions": [
+            {
+              "condition": "template",
               "value_template": "{{ trigger.json.data == 'teamScored' }}",
               "alias": "Your Team Scored Automation"
             }
