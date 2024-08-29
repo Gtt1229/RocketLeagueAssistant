@@ -30,6 +30,8 @@ void RocketLeagueAssistant::RenderSettings() {
 
 	CVarWrapper mainmenuEnableCvar = cvarManager->getCvar("mainmenu_enabled");
 
+	CVarWrapper matchCountdownEnableCvar = cvarManager->getCvar("matchCountdown_enabled");
+
 	CVarWrapper demosEnableCvar = cvarManager->getCvar("demos_enabled");
 
 	CVarWrapper overtimeEnableCvar = cvarManager->getCvar("overtime_enabled");
@@ -55,6 +57,7 @@ void RocketLeagueAssistant::RenderSettings() {
 	if (!demosEnableCvar) { return; }
 	if (!freeplayEnableCvar) { return; }
 	if (!mainmenuEnableCvar) { return; }
+	if (!matchCountdownEnableCvar) { return; }
 
 
 
@@ -142,6 +145,7 @@ void RocketLeagueAssistant::RenderSettings() {
 		}
 
 	
+
 		//Freeplay hook Gui
 
 		bool freeplayEnabled = freeplayEnableCvar.getBoolValue();
@@ -166,7 +170,21 @@ void RocketLeagueAssistant::RenderSettings() {
 			ImGui::SetTooltip("Toggle Webhook");
 		}
 
+
+
+		//matchCountdownEnableCvar hook Gui
 	
+		bool matchCountdownEnabled = matchCountdownEnableCvar.getBoolValue();
+		
+		if (ImGui::Checkbox("Enable Match Countdown Webhook", &matchCountdownEnabled)) {
+			matchCountdownEnableCvar.setValue(matchCountdownEnabled);
+		}
+		if (ImGui::IsItemHovered()) {
+			ImGui::SetTooltip("Toggle Webhook");
+		}
+
+
+
 		//Exit hook Gui
 
 		bool exitEnabled = exitEnableCvar.getBoolValue();

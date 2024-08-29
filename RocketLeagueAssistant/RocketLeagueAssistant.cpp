@@ -16,20 +16,23 @@ std::string haurlen = "None";
 void RocketLeagueAssistant::onLoad()
 {
 
-	cvarManager->registerNotifier("rlamodel", [this](std::vector<std::string> args) {
-		 
-		UpdateModal();
-	
-		}, "", PERMISSION_ALL);
+	//cvarManager->registerNotifier("rlamodel", [this](std::vector<std::string> args) {
+	//	 
+	// Marked for removal in future revision
+	// 
+	//	UpdateModal();
+	//
+	//	}, "", PERMISSION_ALL);
 
 	//Enable Cvars
 	cvarManager->registerCvar("ha_enabled", "1", "Enable Plugin", true, true, 0, true, 1);
 	cvarManager->registerCvar("teams_enabled", "1", "Enable Team Colors", true, true, 0, true, 1);
 	cvarManager->registerCvar("demos_enabled", "1", "Enable Demos Webhook", true, true, 0, true, 1);
-	cvarManager->registerCvar("goalScored_enabled", "1", "Enable Overtime Webhook", true, true, 0, true, 1);
+	cvarManager->registerCvar("goalScored_enabled", "1", "Enable Goal Scored Webhook", true, true, 0, true, 1);
 	cvarManager->registerCvar("freeplay_enabled", "1", "Enable Freeplay Webhook", true, true, 0, true, 1);
 	cvarManager->registerCvar("mainmenu_enabled", "1", "Enable Mainemenu Webhook", true, true, 0, true, 1);
 	cvarManager->registerCvar("overtime_enabled", "1", "Enable Overtime Webhook", true, true, 0, true, 1);
+	cvarManager->registerCvar("matchCountdown_enabled", "1", "Enable Match Countdown Webhook", true, true, 0, true, 1);
 	cvarManager->registerCvar("exit_enabled", "1", "Enable Exit Webhook", true, true, 0, true, 1);
 	cvarManager->registerCvar("isReplay", "0", "Replay boolean", true, true, 0, true, 1);
 	cvarManager->registerCvar("hideURL", "false", "HideURL boolean", true, true, 0, true, 1);
@@ -48,7 +51,8 @@ void RocketLeagueAssistant::onLoad()
 	cvarManager->registerCvar("ha_OtherTeamPrimaryRGBColor", "\"r\":\"255\", \"g\":\"0\", \"b\":\"0\"");
 
 	//Plugin update CVAR
-	cvarManager->registerCvar("updateModal_enabled", "false", "Enable Plugin", true, true, 0, true, 1);
+	//Marked for removal in future revision
+	// cvarManager->registerCvar("updateModal_enabled", "false", "Enable Plugin", true, true, 0, true, 1);
 
 
 	//Prep for possibly using tokens in the future for requests over https
@@ -108,6 +112,13 @@ void RocketLeagueAssistant::LoadHooks()
 
 	//Main Menu
 	gameWrapper->HookEvent("Function TAGame.GFxData_MainMenu_TA.MainMenuAdded", std::bind(&RocketLeagueAssistant::MainMenuHook, this, std::placeholders::_1));
+	//
+
+	//Match Countdown
+	gameWrapper->HookEvent("Function ProjectX.OnlineGameJoinGame_X.StartJoin", std::bind(&RocketLeagueAssistant::MatchCountdownHook, this, std::placeholders::_1));
+	gameWrapper->HookEvent("Function ProjectX.OnlineGameMatchmakingBase_X.Joining.Cancel", std::bind(&RocketLeagueAssistant::MainMenuHook, this, std::placeholders::_1));
+	gameWrapper->HookEvent("Function ProjectX.OnlineGameMatchmakingBase_X.EventFindGameComplete", std::bind(&RocketLeagueAssistant::MainMenuHook, this, std::placeholders::_1));
+	
 	//
 	 
 	//On Game Exit
@@ -249,11 +260,6 @@ void RocketLeagueAssistant::LoadTeams(std::string name)
 
 		CVarWrapper ha_otherTeam = cvarManager->getCvar("ha_otherTeam");
 		if (!ha_otherTeam) { return; }
-		//
-
-
-
-
 		
 
 		//Send based on home or away team
@@ -321,7 +327,6 @@ void RocketLeagueAssistant::StatsHook(void* params)
 	//See if demos are enabled
 	CVarWrapper demosEnabledCvar = cvarManager->getCvar("demos_enabled");
 	bool demosEnabled = demosEnabledCvar.getBoolValue();
-	//if (!demosEnabled) { LOG("Demos Automations are not enabled"); return; }
 	
 	//See if it is a replay
 	CVarWrapper replayCvar = cvarManager->getCvar("isReplay");
@@ -499,12 +504,12 @@ void RocketLeagueAssistant::FreeplayHook()
 	//Check if plugin is enabled
 	CVarWrapper enableCvar = cvarManager->getCvar("ha_enabled");
 	bool enabled = enableCvar.getBoolValue();
-
 	if (!enabled) { LOG("RocketLeagueAssistant is not enabled"); return; }
 
-	//CVarWrapper replayCvar = cvarManager->getCvar("isReplay");
-	//bool isReplay = replayCvar.getBoolValue();
-	//if (!isReplay) { Log("It's a replay"); return; }
+	//See if FreePlay Hooks are enabled
+	CVarWrapper freeplay_enabledCvar = cvarManager->getCvar("freeplay_enabled");
+	bool freeplay_enabled = freeplay_enabledCvar.getBoolValue();
+	if (!freeplay_enabled) { LOG("Freeplay Automations are not enabled"); return; }
 
 	//May be redundant, but good to check
 	if (gameWrapper->IsInFreeplay()) {
@@ -522,13 +527,14 @@ void RocketLeagueAssistant::MainMenuHook(std::string name)
 
 
 
-
-	CVarWrapper updateBoolcvar = cvarManager->getCvar("updateModal_enabled");
-	bool updateBool = updateBoolcvar.getBoolValue();
-	//LOG("Rocket League Assistant Update Boolean: {}", updateBool);
-	if (updateBool == false) {
-		UpdateModal();
-	}
+	//Marked for removal in future revision
+	// 
+	//CVarWrapper updateBoolcvar = cvarManager->getCvar("updateModal_enabled");
+	//bool updateBool = updateBoolcvar.getBoolValue();
+	////LOG("Rocket League Assistant Update Boolean: {}", updateBool);
+	//if (updateBool == false) {
+	//	UpdateModal();
+	//}
 	
 
 	//Check if plugin is enabled
@@ -542,6 +548,20 @@ void RocketLeagueAssistant::MainMenuHook(std::string name)
 	bool mainmenuEnabled = mainmenuEnabledCvar.getBoolValue();
 	if (!mainmenuEnabled) { LOG("Main Menu Automations are not enabled"); return; }
 
+	//Check if player is in Freeplay (This is checked because the MainMenuHook function is called from the cancellation of matchmaking)
+	if (gameWrapper->IsInFreeplay()) {
+
+		CVarWrapper freeplayEnabledCvar = cvarManager->getCvar("freeplay_enabled");
+		bool freeplayEnabled = freeplayEnabledCvar.getBoolValue();
+
+		if (freeplayEnabled == true) {
+			LOG("Player in freeplay, using freeplay hook");
+			FreeplayHook();
+			return;
+		}
+
+	}
+
 	//Get mainmenu automation url, transform, and convert to string
 	std::string event = "mainmenu";
 	LOG("Using Main Menu Hook");
@@ -549,6 +569,24 @@ void RocketLeagueAssistant::MainMenuHook(std::string name)
 
 }
 
+void RocketLeagueAssistant::MatchCountdownHook(std::string name)
+{
+	//Check if plugin is enabled
+	CVarWrapper enableCvar = cvarManager->getCvar("ha_enabled");
+	bool enabled = enableCvar.getBoolValue();
+	if (!enabled) { LOG("RocketLeagueAssistant is not enabled"); return; }
+
+	//See if MatchCountdown Hooks are enabled
+	CVarWrapper matchCountdown_enabledCvar = cvarManager->getCvar("matchCountdown_enabled");
+	bool matchCountdown_enabled = matchCountdown_enabledCvar.getBoolValue();
+	if (!matchCountdown_enabled) { LOG("Match Countdown Automations are not enabled"); return; }
+
+	//Get MatchCountdown automation url, transform, and convert to string
+	std::string event = "matchcountdown";
+	LOG("Using Match Countdown Hook");
+	SendCommands(event);
+
+}
 
 void RocketLeagueAssistant::OvertimeHook(std::string name)
 {
@@ -646,43 +684,28 @@ void RocketLeagueAssistant::Log(std::string msg)
 	cvarManager->log(msg);
 }
 
-void RocketLeagueAssistant::UpdateModal()
-{
-	//Notify users of JSON implementation with a Modal popup
-	ModalWrapper updateModal = gameWrapper->CreateModal("Plugin Change");
-	const std::string iconName = "Texture2D gfx_shared.Icon_Warning";
-	updateModal.SetIcon(iconName);
-	updateModal.SetColor(255, 157, 147);
-	updateModal.SetBody(R"T(Rocket League Assistant has changed its default functionality to utilize JSON based requests.
-	
-Going forward, JSON will be utilized and seperate webhook are no longer available. To continue using seperate webhook, please visit the GitHub and compile a version less than v2.2.
-
-Additionally, the team color JSON keys have been changed.
-
-You can read about the changes at
-https://github.com/Gtt1229/RocketLeagueAssistant )T");
-
-	std::string name = "None";
-	updateModal.AddButton("I Understand", false, [this, name]() {this->RocketLeagueAssistant::modalClosed("I understand"); });
-	updateModal.AddButton("Open Bakkes Settings", true, [this, name]() {this->RocketLeagueAssistant::modalClosed("settings"); });
-
-}
-
 //void RocketLeagueAssistant::UpdateModal()
-//{
+//
+// Marked for removal in future revision
+// 
+// {
 //	//Notify users of JSON implementation with a Modal popup
-//	TextInputModalWrapper updateModal = gameWrapper->CreateTextInputModal("Plugin Change");
+//	ModalWrapper updateModal = gameWrapper->CreateModal("Plugin Change");
 //	const std::string iconName = "Texture2D gfx_shared.Icon_Warning";
-//		
-//	updateModal.SetTextInput("Enter text:", 30, false, [&](std::string input, bool was_closed)
-//		{
-//
-//			RocketLeagueAssistant::OnInput(input, was_closed);
-//
-//
-//		});
-//		
+//	updateModal.SetIcon(iconName);
+//	updateModal.SetColor(255, 157, 147);
+//	updateModal.SetBody(R"T(Rocket League Assistant has changed its default functionality to utilize JSON based requests.
 //	
+//Going forward, JSON will be utilized and seperate webhook are no longer available. To continue using seperate webhook, please visit the GitHub and compile a version less than v2.2.
+//
+//Additionally, the team color JSON keys have been changed.
+//
+//You can read about the changes at
+//https://github.com/Gtt1229/RocketLeagueAssistant )T");
+//
+//	std::string name = "None";
+//	updateModal.AddButton("I Understand", false, [this, name]() {this->RocketLeagueAssistant::modalClosed("I understand"); });
+//	updateModal.AddButton("Open Bakkes Settings", true, [this, name]() {this->RocketLeagueAssistant::modalClosed("settings"); });
 //
 //}
 
@@ -691,20 +714,22 @@ https://github.com/Gtt1229/RocketLeagueAssistant )T");
 //	LOG("input:: {}", input);
 //}
 
-void RocketLeagueAssistant::modalClosed(std::string name) {
-
-	CVarWrapper updateBoolcvar = cvarManager->getCvar("updateModal_enabled");
-	if (!updateBoolcvar) { return; }
-	bool updateBool = true;
-	updateBoolcvar.setValue(updateBool);
-	LOG("ModalClosed::: {}", updateBoolcvar.getBoolValue());
-
-	if (name == "settings") {
-
-		cvarManager->executeCommand("openmenu settings");
-
-	}
-	
-	return;
-	
-}
+//void RocketLeagueAssistant::modalClosed(std::string name) {
+//
+// Marked for removal in future revision
+// 
+//	CVarWrapper updateBoolcvar = cvarManager->getCvar("updateModal_enabled");
+//	if (!updateBoolcvar) { return; }
+//	bool updateBool = true;
+//	updateBoolcvar.setValue(updateBool);
+//	LOG("ModalClosed::: {}", updateBoolcvar.getBoolValue());
+//
+//	if (name == "settings") {
+//
+//		cvarManager->executeCommand("openmenu settings");
+//
+//	}
+//	
+//	return;
+//	
+//}

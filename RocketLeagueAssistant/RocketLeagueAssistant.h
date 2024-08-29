@@ -27,6 +27,7 @@ public:
 	//void ChatHook(void* params);
 	void FreeplayHook();
 	void MainMenuHook(std::string name);
+	void MatchCountdownHook(std::string name);
 	void OvertimeHook(std::string name);
 	//void GoalScoredHook(std::string name);
 	void ExitHook(std::string name);
@@ -36,8 +37,11 @@ public:
 	std::string GenWebHook();
 	std::string GenAutomationID();
 	void CreateAutomation(bool version7bool);
-	void UpdateModal();
-	void modalClosed(std::string name);
+	
+	// Marked for removal in future revision
+	//void UpdateModal();
+	//void modalClosed(std::string name);
+	
 	int GetScore(int teamNum);
 	void GetHAVersion();
 	//void OnInput(const std::string& input, bool was_closed);
