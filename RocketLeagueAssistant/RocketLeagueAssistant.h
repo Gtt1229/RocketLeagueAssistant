@@ -27,6 +27,7 @@ public:
 	//void ChatHook(void* params);
 	void FreeplayHook();
 	void MainMenuHook(std::string name);
+	void MatchCountdownHook(std::string name);
 	void OvertimeHook(std::string name);
 	//void GoalScoredHook(std::string name);
 	void ExitHook(std::string name);

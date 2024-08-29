@@ -26,10 +26,11 @@ void RocketLeagueAssistant::onLoad()
 	cvarManager->registerCvar("ha_enabled", "1", "Enable Plugin", true, true, 0, true, 1);
 	cvarManager->registerCvar("teams_enabled", "1", "Enable Team Colors", true, true, 0, true, 1);
 	cvarManager->registerCvar("demos_enabled", "1", "Enable Demos Webhook", true, true, 0, true, 1);
-	cvarManager->registerCvar("goalScored_enabled", "1", "Enable Overtime Webhook", true, true, 0, true, 1);
+	cvarManager->registerCvar("goalScored_enabled", "1", "Enable Goal Scored Webhook", true, true, 0, true, 1);
 	cvarManager->registerCvar("freeplay_enabled", "1", "Enable Freeplay Webhook", true, true, 0, true, 1);
 	cvarManager->registerCvar("mainmenu_enabled", "1", "Enable Mainemenu Webhook", true, true, 0, true, 1);
 	cvarManager->registerCvar("overtime_enabled", "1", "Enable Overtime Webhook", true, true, 0, true, 1);
+	cvarManager->registerCvar("matchcountdown_enabled", "1", "Enable Match Countdown Webhook", true, true, 0, true, 1);
 	cvarManager->registerCvar("exit_enabled", "1", "Enable Exit Webhook", true, true, 0, true, 1);
 	cvarManager->registerCvar("isReplay", "0", "Replay boolean", true, true, 0, true, 1);
 	cvarManager->registerCvar("hideURL", "false", "HideURL boolean", true, true, 0, true, 1);
@@ -108,6 +109,10 @@ void RocketLeagueAssistant::LoadHooks()
 
 	//Main Menu
 	gameWrapper->HookEvent("Function TAGame.GFxData_MainMenu_TA.MainMenuAdded", std::bind(&RocketLeagueAssistant::MainMenuHook, this, std::placeholders::_1));
+	//
+
+	//Match Countdown
+	gameWrapper->HookEvent("Function ProjectX.OnlineGameJoinGame_X.StartJoin", std::bind(&RocketLeagueAssistant::MatchCountdownHook, this, std::placeholders::_1));
 	//
 	 
 	//On Game Exit
@@ -499,12 +504,12 @@ void RocketLeagueAssistant::FreeplayHook()
 	//Check if plugin is enabled
 	CVarWrapper enableCvar = cvarManager->getCvar("ha_enabled");
 	bool enabled = enableCvar.getBoolValue();
-
 	if (!enabled) { LOG("RocketLeagueAssistant is not enabled"); return; }
 
-	//CVarWrapper replayCvar = cvarManager->getCvar("isReplay");
-	//bool isReplay = replayCvar.getBoolValue();
-	//if (!isReplay) { Log("It's a replay"); return; }
+	//See if FreePlay Hooks are enabled
+	CVarWrapper freeplay_enabledCvar = cvarManager->getCvar("freeplay_enabled");
+	bool freeplay_enabled = freeplay_enabledCvar.getBoolValue();
+	if (!freeplay_enabled) { LOG("Freeplay Automations are not enabled"); return; }
 
 	//May be redundant, but good to check
 	if (gameWrapper->IsInFreeplay()) {
@@ -549,6 +554,24 @@ void RocketLeagueAssistant::MainMenuHook(std::string name)
 
 }
 
+void RocketLeagueAssistant::MatchCountdownHook(std::string name)
+{
+	//Check if plugin is enabled
+	CVarWrapper enableCvar = cvarManager->getCvar("ha_enabled");
+	bool enabled = enableCvar.getBoolValue();
+	if (!enabled) { LOG("RocketLeagueAssistant is not enabled"); return; }
+
+	//See if MatchCountdown Hooks are enabled
+	CVarWrapper matchcountdown_enabledCvar = cvarManager->getCvar("matchcountdown_enabled");
+	bool matchcountdown_enabled = matchcountdown_enabledCvar.getBoolValue();
+	if (!matchcountdown_enabled) { LOG("Match Countdown Automations are not enabled"); return; }
+
+	//Get MatchCountdown automation url, transform, and convert to string
+	std::string event = "matchcountdown";
+	LOG("Using Match Countdown Hook");
+	SendCommands(event);
+
+}
 
 void RocketLeagueAssistant::OvertimeHook(std::string name)
 {
