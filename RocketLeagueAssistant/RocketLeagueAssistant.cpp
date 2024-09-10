@@ -117,7 +117,7 @@ void RocketLeagueAssistant::LoadHooks()
 	//Match Countdown
 	gameWrapper->HookEvent("Function ProjectX.OnlineGameJoinGame_X.StartJoin", std::bind(&RocketLeagueAssistant::MatchCountdownHook, this, std::placeholders::_1));
 	gameWrapper->HookEvent("Function ProjectX.OnlineGameMatchmakingBase_X.Joining.Cancel", std::bind(&RocketLeagueAssistant::MainMenuHook, this, std::placeholders::_1));
-	gameWrapper->HookEvent("Function ProjectX.OnlineGameMatchmakingBase_X.EventFindGameComplete", std::bind(&RocketLeagueAssistant::MainMenuHook, this, std::placeholders::_1));
+	gameWrapper->HookEvent("Function ProjectX.OnlineGameMatchmakingBase_X.Cancel", std::bind(&RocketLeagueAssistant::MainMenuHook, this, std::placeholders::_1));
 	
 	//
 	 
@@ -536,6 +536,7 @@ void RocketLeagueAssistant::MainMenuHook(std::string name)
 	//	UpdateModal();
 	//}
 	
+	LOG("MainMenu Hook");
 
 	//Check if plugin is enabled
 	CVarWrapper enableCvar = cvarManager->getCvar("ha_enabled");
@@ -557,6 +558,20 @@ void RocketLeagueAssistant::MainMenuHook(std::string name)
 		if (freeplayEnabled == true) {
 			LOG("Player in freeplay, using freeplay hook");
 			FreeplayHook();
+			return;
+		}
+
+	}
+
+	//Check if player is in a game (This is checked because the MainMenuHook function is called from the cancellation of matchmaking)
+	if ((gameWrapper->IsInGame()) || (gameWrapper->IsInOnlineGame()) ) {
+
+		CVarWrapper teamsEnabledCvar = cvarManager->getCvar("teams_enabled");
+		bool teamsEnabled = teamsEnabledCvar.getBoolValue();
+
+		if (teamsEnabled == true) {
+			LOG("Player in a game, using teamshook");
+			LoadTeams("loadteams");
 			return;
 		}
 
