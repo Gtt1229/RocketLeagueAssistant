@@ -138,7 +138,7 @@ x.TeamData.OtherTeam.score /OtherTeam's score
 
 [**More on scene creation here**](https://www.home-assistant.io/integrations/scene/)
 
-Blueprint URL: https://gist.github.com/Gtt1229/fd0ee332ebb3f7eeddaf9f14e0ef6d36.js
+Blueprint URL: https://gist.github.com/Gtt1229/fd0ee332ebb3f7eeddaf9f14e0ef6d36
 
 ### Notes
 
