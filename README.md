@@ -138,7 +138,7 @@ x.TeamData.OtherTeam.score /OtherTeam's score
 
 [**More on scene creation here**](https://www.home-assistant.io/integrations/scene/)
 
-Blueprint URL: https://gist.github.com/Gtt1229/fd0ee332ebb3f7eeddaf9f14e0ef6d36
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgist.github.com%2FGtt1229%2Ffd0ee332ebb3f7eeddaf9f14e0ef6d36)
 
 ### Notes
 
