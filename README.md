@@ -1,6 +1,8 @@
 # Rocket League Assistant
 BakkesMod Plugin to integrate Rocket League events with Home Assistant
 
+If you *really* wnat to buy me a coffee: https://ko-fi.com/gtt1229
+
 ## Discord: [Rocket League Assistant](https://discord.gg/8bNkhCmQXe)
 
 ![RLHAbanner](https://user-images.githubusercontent.com/23534272/175837042-8db1aea4-214a-4e69-92ab-2c4c705ffeda.png)
