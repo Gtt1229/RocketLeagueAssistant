@@ -60,16 +60,20 @@ void RocketLeagueAssistant::CreateAutomation(bool version7bool)
 	
 	std::string dataVar = "{\"id\" :";
 	std::string last;
-	//Automation YAML for pre 2023.7.X
-	if (version7bool == false)
-	{				
-		last = R"T(
-"alias": "RocketLeague - BakkesGenerated",
+
+//Automation with webhook attributes populated for HA 2023.7.x
+    last = R"T(
+"alias": "RocketLeague - BakkesGenerated 2023.7.X",
   "description": "",
   "trigger": [
     {
       "platform": "webhook",
-      "webhook_id":")T" + webhookURL + R"T("
+      "webhook_id":")T" + webhookURL + R"T(",
+      "allowed_methods": [
+        "POST",
+        "PUT"
+      ],
+      "local_only": true
     }
   ],
   "condition": [],
@@ -212,147 +216,6 @@ void RocketLeagueAssistant::CreateAutomation(bool version7bool)
   "mode": "single"
 }
 )T";
-
-	}
-	else
-	{
-
-//Automation with webhook attributes populated for HA 2023.7.x
-    last = R"T(
-"alias": "RocketLeague - BakkesGenerated 2023.7.X",
-  "description": "",
-  "trigger": [
-    {
-      "platform": "webhook",
-      "webhook_id":")T" + webhookURL + R"T(",
-      "allowed_methods": [
-        "POST",
-        "PUT"
-      ],
-      "local_only": true
-    }
-  ],
-  "condition": [],
-  "action": [
-    {
-      "choose": [
-        {
-          "conditions": [
-            {
-              "condition": "template",
-              "value_template": "{{ trigger.json.data == 'home' }}",
-              "alias": "Blue Team (Home) Automation"
-            }
-          ],
-          "sequence": []
-        },
-        {
-          "conditions": [
-            {
-              "condition": "template",
-              "value_template": "{{ trigger.json.data == 'away' }}",
-              "alias": "Orange Team (Away) Automation"
-            }
-          ],
-          "sequence": []
-        },
-        {
-          "conditions": [
-            {
-              "condition": "template",
-              "value_template": "{{ trigger.json.data == 'mainmenu' }}",
-              "alias": "Main Menu Automation"
-            }
-          ],
-          "sequence": []
-        },
-        {
-          "conditions": [
-            {
-              "condition": "template",
-              "value_template": "{{ trigger.json.data == 'matchcountdown' }}",
-              "alias": "Match Countdown Automation"
-            }
-          ],
-          "sequence": []
-        },
-        {
-          "conditions": [
-            {
-              "condition": "template",
-              "value_template": "{{ trigger.json.data == 'teamScored' }}",
-              "alias": "Your Team Scored Automation"
-            }
-          ],
-          "sequence": []
-        },
-        {
-          "conditions": [
-            {
-              "condition": "template",
-              "value_template": "{{ trigger.json.data == 'otherTeamScored' }}",
-              "alias": "The Other Team Scored Automation"
-            }
-          ],
-          "sequence": []
-        },
-        {
-          "conditions": [
-            {
-              "condition": "template",
-              "value_template": "{{ trigger.json.data == 'teamDemoed' }}",
-              "alias": "Your Team Demo'd the Other Team Automation"
-            }
-          ],
-          "sequence": []
-        },
-        {
-          "conditions": [
-            {
-              "condition": "template",
-              "value_template": "{{ trigger.json.data == 'gotDemoed' }}",
-              "alias": "The Other Team Demo'd Your Team Automation"
-            }
-          ],
-          "sequence": []
-        },
-        {
-          "conditions": [
-            {
-              "condition": "template",
-              "value_template": "{{ trigger.json.data == 'freeplay' }}",
-              "alias": "Freeplay Automation"
-            }
-          ],
-          "sequence": []
-        },
-        {
-          "conditions": [
-            {
-              "condition": "template",
-              "value_template": "{{ trigger.json.data == 'overtime' }}",
-              "alias": "Overtime Automation"
-            }
-          ],
-          "sequence": []
-        },
-        {
-          "conditions": [
-            {
-              "condition": "template",
-              "value_template": "{{ trigger.json.data == 'exit' }}",
-              "alias": "Game Exit Automation (ex: Return Lights to Normal)"
-            }
-          ],
-          "sequence": []
-        }
-      ]
-    }
-  ],
-  "mode": "single"
-}
-)T";
-	}
 
 
 	//LOG("{}", last);

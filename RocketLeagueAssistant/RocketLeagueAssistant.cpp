@@ -111,11 +111,13 @@ void RocketLeagueAssistant::LoadHooks()
 	gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.OnOvertimeUpdated", std::bind(&RocketLeagueAssistant::OvertimeHook, this, std::placeholders::_1));
 	//
 
+	//Last 10 seconds of the match countdown
 	gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.EventEndGameCountDown", std::bind(&RocketLeagueAssistant::EndGameCountdownHook, this, std::placeholders::_1));
-
+	//
 
 	//Not sure which of these is best, the EventMatchEnded is only called if the podium is shown, so added another for good measure.
 	gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.OnMatchEnded", std::bind(&RocketLeagueAssistant::MatchEndHook, this, std::placeholders::_1));
+	//
 
 	//Main Menu
 	gameWrapper->HookEvent("Function TAGame.GFxData_MainMenu_TA.MainMenuAdded", std::bind(&RocketLeagueAssistant::MainMenuHook, this, std::placeholders::_1));
@@ -125,7 +127,6 @@ void RocketLeagueAssistant::LoadHooks()
 	gameWrapper->HookEvent("Function ProjectX.OnlineGameJoinGame_X.StartJoin", std::bind(&RocketLeagueAssistant::MatchCountdownHook, this, std::placeholders::_1));
 	gameWrapper->HookEvent("Function ProjectX.OnlineGameMatchmakingBase_X.Joining.Cancel", std::bind(&RocketLeagueAssistant::MainMenuHook, this, std::placeholders::_1));
 	gameWrapper->HookEvent("Function ProjectX.OnlineGameMatchmakingBase_X.Cancel", std::bind(&RocketLeagueAssistant::MainMenuHook, this, std::placeholders::_1));
-	
 	//
 	 
 	//On Game Exit
