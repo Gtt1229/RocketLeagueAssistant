@@ -70,7 +70,7 @@ void RocketLeagueAssistant::GetHAVersion() {
 				}
 				else
 				{
-					RocketLeagueAssistant::CreateAutomation(false);
+					return;
 				}
 			};
 

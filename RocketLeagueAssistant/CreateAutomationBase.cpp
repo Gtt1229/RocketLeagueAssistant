@@ -60,142 +60,6 @@ void RocketLeagueAssistant::CreateAutomation(bool version7bool)
 	
 	std::string dataVar = "{\"id\" :";
 	std::string last;
-	//Automation YAML for pre 2023.7.X
-	if (version7bool == false)
-	{				
-		last = R"T(
-"alias": "RocketLeague - BakkesGenerated",
-  "description": "",
-  "trigger": [
-    {
-      "platform": "webhook",
-      "webhook_id":")T" + webhookURL + R"T("
-    }
-  ],
-  "condition": [],
-  "action": [
-    {
-      "choose": [
-        {
-          "conditions": [
-            {
-              "condition": "template",
-              "value_template": "{{ trigger.json.data == 'home' }}",
-              "alias": "Blue Team (Home) Automation"
-            }
-          ],
-          "sequence": []
-        },
-        {
-          "conditions": [
-            {
-              "condition": "template",
-              "value_template": "{{ trigger.json.data == 'away' }}",
-              "alias": "Orange Team (Away) Automation"
-            }
-          ],
-          "sequence": []
-        },
-        {
-          "conditions": [
-            {
-              "condition": "template",
-              "value_template": "{{ trigger.json.data == 'mainmenu' }}",
-              "alias": "Main Menu Automation"
-            }
-          ],
-          "sequence": []
-        },
-        {
-          "conditions": [
-            {
-              "condition": "template",
-              "value_template": "{{ trigger.json.data == 'matchcountdown' }}",
-              "alias": "Match Countdown Automation"
-            }
-          ],
-          "sequence": []
-        },
-        {
-          "conditions": [
-            {
-              "condition": "template",
-              "value_template": "{{ trigger.json.data == 'teamScored' }}",
-              "alias": "Your Team Scored Automation"
-            }
-          ],
-          "sequence": []
-        },
-        {
-          "conditions": [
-            {
-              "condition": "template",
-              "value_template": "{{ trigger.json.data == 'otherTeamScored' }}",
-              "alias": "The Other Team Scored Automation"
-            }
-          ],
-          "sequence": []
-        },
-        {
-          "conditions": [
-            {
-              "condition": "template",
-              "value_template": "{{ trigger.json.data == 'teamDemoed' }}",
-              "alias": "Your Team Demo'd the Other Team Automation"
-            }
-          ],
-          "sequence": []
-        },
-        {
-          "conditions": [
-            {
-              "condition": "template",
-              "value_template": "{{ trigger.json.data == 'gotDemoed' }}",
-              "alias": "The Other Team Demo'd Your Team Automation"
-            }
-          ],
-          "sequence": []
-        },
-        {
-          "conditions": [
-            {
-              "condition": "template",
-              "value_template": "{{ trigger.json.data == 'freeplay' }}",
-              "alias": "Freeplay Automation"
-            }
-          ],
-          "sequence": []
-        },
-        {
-          "conditions": [
-            {
-              "condition": "template",
-              "value_template": "{{ trigger.json.data == 'overtime' }}",
-              "alias": "Overtime Automation"
-            }
-          ],
-          "sequence": []
-        },
-        {
-          "conditions": [
-            {
-              "condition": "template",
-              "value_template": "{{ trigger.json.data == 'exit' }}",
-              "alias": "Game Exit Automation (ex: Return Lights to Normal)"
-            }
-          ],
-          "sequence": []
-        }
-      ]
-    }
-  ],
-  "mode": "single"
-}
-)T";
-
-	}
-	else
-	{
 
 //Automation with webhook attributes populated for HA 2023.7.x
     last = R"T(
@@ -300,6 +164,26 @@ void RocketLeagueAssistant::CreateAutomation(bool version7bool)
           "conditions": [
             {
               "condition": "template",
+              "value_template": "{{ trigger.json.data == 'endGameCountdown' }}",
+              "alias": "The End of Game Countdown Started"
+            }
+          ],
+          "sequence": []
+        },
+        {
+          "conditions": [
+            {
+              "condition": "template",
+              "value_template": "{{ trigger.json.data == 'matchEnded' }}",
+              "alias": "The Match Officially Ended"
+            }
+          ],
+          "sequence": []
+        },
+        {
+          "conditions": [
+            {
+              "condition": "template",
               "value_template": "{{ trigger.json.data == 'freeplay' }}",
               "alias": "Freeplay Automation"
             }
@@ -332,7 +216,6 @@ void RocketLeagueAssistant::CreateAutomation(bool version7bool)
   "mode": "single"
 }
 )T";
-	}
 
 
 	//LOG("{}", last);
