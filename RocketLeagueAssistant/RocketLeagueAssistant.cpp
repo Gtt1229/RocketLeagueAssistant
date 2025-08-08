@@ -342,7 +342,6 @@ std::string RocketLeagueAssistant::ConvertLinearColor(float red, float green, fl
 
 void RocketLeagueAssistant::StatsHook(void* params)
 {
-	LOG("StatsHook Ran");
 	//Check if plugin is enabled
 	CVarWrapper enableCvar = cvarManager->getCvar("ha_enabled");
 	bool enabled = enableCvar.getBoolValue();
