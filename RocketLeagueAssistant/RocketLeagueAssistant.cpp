@@ -644,12 +644,12 @@ void RocketLeagueAssistant::EndGameCountdownHook(std::string name)
 	if (!enabled) { LOG("RocketLeagueAssistant is not enabled"); return; }
 
 
-	//See if overtime hook is enabled
+	//See if End Game Countdown hook is enabled
 	CVarWrapper endGameCountdownEnabledCvar = cvarManager->getCvar("endGameCountdown_enabled");
 	bool endGameCountdownEnabled = endGameCountdownEnabledCvar.getBoolValue();
 	if (!endGameCountdownEnabled) { LOG("End of Game Countdown Automations are not enabled"); return; }
 
-	//Get overtime automation url, transform, and convert to string
+	//Get End Game Countdown automation url, transform, and convert to string
 	std::string event = "endGameCountdown";
 	LOG("Using matchend Hook");
 	SendCommands(event);
@@ -667,12 +667,12 @@ void RocketLeagueAssistant::MatchEndHook(std::string name)
 	if (!enabled) { LOG("RocketLeagueAssistant is not enabled"); return; }
 
 
-	//See if overtime hook is enabled
+	//See if match end hook is enabled
 	CVarWrapper matchEndEnabledCvar = cvarManager->getCvar("matchEnd_enabled");
 	bool matchEndEnabled = matchEndEnabledCvar.getBoolValue();
 	if (!matchEndEnabled) { LOG("Match End Automations are not enabled"); return; }
 
-	//Get overtime automation url, transform, and convert to string
+	//Get match end automation url, transform, and convert to string
 	std::string event = "matchEnded";
 	LOG("Using matchend Hook");
 	SendCommands(event);
@@ -756,7 +756,7 @@ void RocketLeagueAssistant::Log(std::string msg)
 
 //void RocketLeagueAssistant::UpdateModal()
 //
-// Marked for removal in future revision
+// Keeping this in case it is needed in the future
 // 
 // {
 //	//Notify users of JSON implementation with a Modal popup
