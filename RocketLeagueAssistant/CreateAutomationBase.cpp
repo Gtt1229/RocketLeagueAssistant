@@ -160,6 +160,26 @@ void RocketLeagueAssistant::CreateAutomation(bool version7bool)
           "conditions": [
             {
               "condition": "template",
+              "value_template": "{{ trigger.json.data == 'endGameCountdown' }}",
+              "alias": "The End of Game Countdown Started"
+            }
+          ],
+          "sequence": []
+        },
+        {
+          "conditions": [
+            {
+              "condition": "template",
+              "value_template": "{{ trigger.json.data == 'matchEnded' }}",
+              "alias": "The Match Officially Ended"
+            }
+          ],
+          "sequence": []
+        },
+        {
+          "conditions": [
+            {
+              "condition": "template",
               "value_template": "{{ trigger.json.data == 'freeplay' }}",
               "alias": "Freeplay Automation"
             }

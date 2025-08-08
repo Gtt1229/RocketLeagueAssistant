@@ -33,6 +33,8 @@ void RocketLeagueAssistant::onLoad()
 	cvarManager->registerCvar("mainmenu_enabled", "1", "Enable Mainemenu Webhook", true, true, 0, true, 1);
 	cvarManager->registerCvar("overtime_enabled", "1", "Enable Overtime Webhook", true, true, 0, true, 1);
 	cvarManager->registerCvar("matchCountdown_enabled", "1", "Enable Match Countdown Webhook", true, true, 0, true, 1);
+	cvarManager->registerCvar("endGameCountdown_enabled", "1", "Enable Match End Webhook", true, true, 0, true, 1);
+	cvarManager->registerCvar("matchEnd_enabled", "1", "Enable Match End Webhook", true, true, 0, true, 1);
 	cvarManager->registerCvar("exit_enabled", "1", "Enable Exit Webhook", true, true, 0, true, 1);
 	cvarManager->registerCvar("isReplay", "0", "Replay boolean", true, true, 0, true, 1);
 	cvarManager->registerCvar("hideURL", "false", "HideURL boolean", true, true, 0, true, 1);
@@ -109,6 +111,11 @@ void RocketLeagueAssistant::LoadHooks()
 	gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.OnOvertimeUpdated", std::bind(&RocketLeagueAssistant::OvertimeHook, this, std::placeholders::_1));
 	//
 
+	gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.EventEndGameCountDown", std::bind(&RocketLeagueAssistant::EndGameCountdownHook, this, std::placeholders::_1));
+
+
+	//Not sure which of these is best, the EventMatchEnded is only called if the podium is shown, so added another for good measure.
+	gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.OnMatchEnded", std::bind(&RocketLeagueAssistant::MatchEndHook, this, std::placeholders::_1));
 
 	//Main Menu
 	gameWrapper->HookEvent("Function TAGame.GFxData_MainMenu_TA.MainMenuAdded", std::bind(&RocketLeagueAssistant::MainMenuHook, this, std::placeholders::_1));
@@ -209,18 +216,18 @@ void RocketLeagueAssistant::LoadTeams(std::string name)
 		TeamWrapper otherTeam = teams.Get(otherteamnum);
 
 
-		//set other team's number based on player's current team number
-		if (teamnum == 0) {
-
-			otherteamnum = 1;
-			TeamWrapper otherTeam = teams.Get(otherteamnum);
-		}
-
-		if (teamnum == 1) {
-
-			otherteamnum = 0;
-			TeamWrapper otherTeam = teams.Get(otherteamnum);
-		}
+		////set other team's number based on player's current team number
+		//if (teamnum == 0) {
+		//
+		//	otherteamnum = 1;
+		//	TeamWrapper otherTeam = teams.Get(otherteamnum);
+		//}
+		//
+		//if (teamnum == 1) {
+		//
+		//	otherteamnum = 0;
+		//	TeamWrapper otherTeam = teams.Get(otherteamnum);
+		//}
 		
 		//Get player's team's linear color
 		LinearColor primaryColor = myTeam.GetPrimaryColor();
@@ -623,6 +630,53 @@ void RocketLeagueAssistant::OvertimeHook(std::string name)
 	SendCommands(event);
 	
 	
+
+}
+
+
+void RocketLeagueAssistant::EndGameCountdownHook(std::string name)
+{
+	//Check if plugin is enabled
+	CVarWrapper enableCvar = cvarManager->getCvar("ha_enabled");
+	bool enabled = enableCvar.getBoolValue();
+
+	if (!enabled) { LOG("RocketLeagueAssistant is not enabled"); return; }
+
+
+	//See if overtime hook is enabled
+	CVarWrapper endGameCountdownEnabledCvar = cvarManager->getCvar("endGameCountdown_enabled");
+	bool endGameCountdownEnabled = endGameCountdownEnabledCvar.getBoolValue();
+	if (!endGameCountdownEnabled) { LOG("End of Game Countdown Automations are not enabled"); return; }
+
+	//Get overtime automation url, transform, and convert to string
+	std::string event = "endGameCountdown";
+	LOG("Using matchend Hook");
+	SendCommands(event);
+
+
+
+}
+
+void RocketLeagueAssistant::MatchEndHook(std::string name)
+{
+	//Check if plugin is enabled
+	CVarWrapper enableCvar = cvarManager->getCvar("ha_enabled");
+	bool enabled = enableCvar.getBoolValue();
+
+	if (!enabled) { LOG("RocketLeagueAssistant is not enabled"); return; }
+
+
+	//See if overtime hook is enabled
+	CVarWrapper matchEndEnabledCvar = cvarManager->getCvar("matchEnd_enabled");
+	bool matchEndEnabled = matchEndEnabledCvar.getBoolValue();
+	if (!matchEndEnabled) { LOG("Match End Automations are not enabled"); return; }
+
+	//Get overtime automation url, transform, and convert to string
+	std::string event = "matchEnded";
+	LOG("Using matchend Hook");
+	SendCommands(event);
+
+
 
 }
 

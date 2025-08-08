@@ -36,6 +36,10 @@ void RocketLeagueAssistant::RenderSettings() {
 
 	CVarWrapper overtimeEnableCvar = cvarManager->getCvar("overtime_enabled");
 
+	CVarWrapper endGameCountdownEnableCvar = cvarManager->getCvar("endGameCountdown_enabled");
+
+	CVarWrapper matchEndEnableCvar = cvarManager->getCvar("matchEnd_enabled");
+
 	CVarWrapper freeplayEnableCvar = cvarManager->getCvar("freeplay_enabled");
 
 	CVarWrapper exitEnableCvar = cvarManager->getCvar("exit_enabled");
@@ -54,6 +58,8 @@ void RocketLeagueAssistant::RenderSettings() {
 	if (!teamsEnableCvar) { return; }
 	if (!goalScoredEnableCvar) { return; }
 	if (!overtimeEnableCvar) { return; }
+	if (!endGameCountdownEnableCvar) { return; }
+	if (!matchEndEnableCvar) { return; }
 	if (!demosEnableCvar) { return; }
 	if (!freeplayEnableCvar) { return; }
 	if (!mainmenuEnableCvar) { return; }
@@ -178,6 +184,28 @@ void RocketLeagueAssistant::RenderSettings() {
 		
 		if (ImGui::Checkbox("Enable Match Countdown Webhook", &matchCountdownEnabled)) {
 			matchCountdownEnableCvar.setValue(matchCountdownEnabled);
+		}
+		if (ImGui::IsItemHovered()) {
+			ImGui::SetTooltip("Toggle Webhook");
+		}
+
+		//matchEndEnableCvar hook Gui
+
+		bool endGameCountdownEnabled = endGameCountdownEnableCvar.getBoolValue();
+
+		if (ImGui::Checkbox("Enable End of Game Countdown Webhook", &endGameCountdownEnabled)) {
+			endGameCountdownEnableCvar.setValue(endGameCountdownEnabled);
+		}
+		if (ImGui::IsItemHovered()) {
+			ImGui::SetTooltip("Toggle Webhook");
+		}
+
+		//matchEndEnableCvar hook Gui
+
+		bool matchEndEnabled = matchEndEnableCvar.getBoolValue();
+
+		if (ImGui::Checkbox("Enable Match End Webhook", &matchEndEnabled)) {
+			matchEndEnableCvar.setValue(matchEndEnabled);
 		}
 		if (ImGui::IsItemHovered()) {
 			ImGui::SetTooltip("Toggle Webhook");
