@@ -624,7 +624,7 @@ void RocketLeagueAssistant::MatchCountdownHook(std::string name)
 	std::string event = "matchcountdown";
 	LOG("Using Match Countdown Hook");
 	SendCommands(event);
-
+	podiumMode = false;
 }
 
 void RocketLeagueAssistant::OvertimeHook(std::string name)
