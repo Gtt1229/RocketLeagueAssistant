@@ -15,6 +15,9 @@ class RocketLeagueAssistant: public BakkesMod::Plugin::BakkesModPlugin, public B
 
 	//std::shared_ptr<bool> enabled;
 public:
+	
+	bool podiumMode = false;
+	
 	//Boilerplate
 	virtual void onLoad();
 	virtual void onUnload();
@@ -36,6 +39,7 @@ public:
 	void Replay(std::string name);
 	void NotReplay(std::string name);
 	void SendCommands(std::string event);
+	void PodiumMode(std::string name);
 	std::string GenWebHook();
 	std::string GenAutomationID();
 	void CreateAutomation(bool version7bool);

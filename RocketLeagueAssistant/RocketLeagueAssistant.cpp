@@ -133,10 +133,19 @@ void RocketLeagueAssistant::LoadHooks()
 	gameWrapper->HookEvent("Function ProjectX.GFxShell_X.ExitGame", std::bind(&RocketLeagueAssistant::ExitHook, this, std::placeholders::_1));
 	//
 	
+	//Check if game is in podium mode
+	gameWrapper->HookEvent("Function TAGame.Car_TA.EnablePodiumMode", std::bind(&RocketLeagueAssistant::PodiumMode, this, std::placeholders::_1));
+	
+
 	//Check if it is a replay
 	gameWrapper->HookEvent("Function GameEvent_Soccar_TA.ReplayPlayback.BeginState", std::bind(&RocketLeagueAssistant::Replay, this, std::placeholders::_1));
 	gameWrapper->HookEvent("Function GameEvent_Soccar_TA.ReplayPlayback.EndState", std::bind(&RocketLeagueAssistant::NotReplay, this, std::placeholders::_1));
 	//
+}
+
+void RocketLeagueAssistant::PodiumMode(std::string name)
+{
+	podiumMode = true;
 }
 
 void RocketLeagueAssistant::LoadTeams(std::string name)
@@ -172,8 +181,16 @@ void RocketLeagueAssistant::LoadTeams(std::string name)
 	
 	}
 
+	if (gameWrapper->IsInReplay()) {
+		LOG("Spectating"); return;
+	}
+
 	if (!gameWrapper->IsInFreeplay()) {
 
+		if(podiumMode == true) {
+			podiumMode = false;
+			return;
+		}
 
 		CVarWrapper replayCvar = cvarManager->getCvar("isReplay");
 		bool isReplay = replayCvar.getBoolValue();
@@ -325,7 +342,7 @@ std::string RocketLeagueAssistant::ConvertLinearColor(float red, float green, fl
 
 void RocketLeagueAssistant::StatsHook(void* params)
 {
-
+	LOG("StatsHook Ran");
 	//Check if plugin is enabled
 	CVarWrapper enableCvar = cvarManager->getCvar("ha_enabled");
 	bool enabled = enableCvar.getBoolValue();
