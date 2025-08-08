@@ -1,7 +1,9 @@
 # Rocket League Assistant
 BakkesMod Plugin to integrate Rocket League events with Home Assistant
 
-## Discord: [Rocket League Assistant](https://discord.gg/8bNkhCmQXe)
+If you *really* want to buy me a coffee: [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/gtt1229)
+
+## Discord: [Rocket League Assistant](https://discord.gg/8UDX9eVUFb)
 
 ![RLHAbanner](https://user-images.githubusercontent.com/23534272/175837042-8db1aea4-214a-4e69-92ab-2c4c705ffeda.png)
 
@@ -134,6 +136,8 @@ x.TeamData.OtherTeam.score /OtherTeam's score
 8. Repeat
 
 [**More on scene creation here**](https://www.home-assistant.io/integrations/scene/)
+
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgist.github.com%2FGtt1229%2Ffd0ee332ebb3f7eeddaf9f14e0ef6d36)
 
 ### Notes
 
