@@ -64,6 +64,7 @@ void RocketLeagueAssistant::RenderSettings() {
 	if (!freeplayEnableCvar) { return; }
 	if (!mainmenuEnableCvar) { return; }
 	if (!matchCountdownEnableCvar) { return; }
+	if (!exitEnableCvar) { return; }
 
 
 
@@ -114,7 +115,7 @@ void RocketLeagueAssistant::RenderSettings() {
 			ImGui::SetTooltip("Toggle Webhook");
 		}
 
-		
+
 		//Goal Scored hook Gui
 
 		bool goalScoredEnabled = goalScoredEnableCvar.getBoolValue();

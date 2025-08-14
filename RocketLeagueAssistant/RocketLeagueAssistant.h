@@ -17,6 +17,7 @@ class RocketLeagueAssistant: public BakkesMod::Plugin::BakkesModPlugin, public B
 public:
 	
 	bool podiumMode = false;
+	bool endGameCountdown = false;
 	
 	//Boilerplate
 	virtual void onLoad();

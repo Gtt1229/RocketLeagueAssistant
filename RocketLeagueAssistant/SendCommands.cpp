@@ -83,7 +83,7 @@ void RocketLeagueAssistant::SendCommands(std::string event)
 )T";
 
 	
-	LOG("Sent:{}", jsonBody);
+	//LOG("Sent:{}", jsonBody);
 	req.verb = "POST";
 
 
