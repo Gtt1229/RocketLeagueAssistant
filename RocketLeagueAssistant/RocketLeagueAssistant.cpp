@@ -66,9 +66,6 @@ void RocketLeagueAssistant::onLoad()
 	//call LoadHooks method
 	this->LoadHooks();
 
-
-
-
 	_globalCvarManager = cvarManager;
 
 
@@ -113,10 +110,25 @@ void RocketLeagueAssistant::LoadHooks()
 
 	//Last 10 seconds of the match countdown
 	gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.EventEndGameCountDown", std::bind(&RocketLeagueAssistant::EndGameCountdownHook, this, std::placeholders::_1));
+	//kickoff countdown
+	gameWrapper->HookEventWithCallerPost<ServerWrapper>("Function TAGame.GameEvent_Soccar_TA.OnGameTimeUpdated",
+		[&](ServerWrapper caller, void* params, std::string eventName) {
+
+			//check if 5 minutes remaining
+			if (caller.GetSecondsRemaining() < 11)
+			{
+				EndGameCountdownHook("endGameCountdown");
+			}
+			else
+			{
+				endGameCountdown = false;
+			}
+		});
 	//
 
 	//Not sure which of these is best, the EventMatchEnded is only called if the podium is shown, so added another for good measure.
 	gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.OnMatchEnded", std::bind(&RocketLeagueAssistant::MatchEndHook, this, std::placeholders::_1));
+	gameWrapper->HookEvent("Function TAGame.PRI_TA.ServerVoteToForfeit", std::bind(&RocketLeagueAssistant::MatchEndHook, this, std::placeholders::_1));
 	//
 
 	//Main Menu
@@ -125,7 +137,6 @@ void RocketLeagueAssistant::LoadHooks()
 
 	//Match Countdown
 	gameWrapper->HookEvent("Function ProjectX.OnlineGameJoinGame_X.StartJoin", std::bind(&RocketLeagueAssistant::MatchCountdownHook, this, std::placeholders::_1));
-	gameWrapper->HookEvent("Function ProjectX.OnlineGameMatchmakingBase_X.Joining.Cancel", std::bind(&RocketLeagueAssistant::MainMenuHook, this, std::placeholders::_1));
 	gameWrapper->HookEvent("Function ProjectX.OnlineGameMatchmakingBase_X.Cancel", std::bind(&RocketLeagueAssistant::MainMenuHook, this, std::placeholders::_1));
 	//
 	 
@@ -163,7 +174,7 @@ void RocketLeagueAssistant::LoadTeams(std::string name)
 	//Check if it is a replay (this is may be temporary to minimize log flooding on Home Assistant)
 	CVarWrapper replayCvar = cvarManager->getCvar("isReplay");
 	bool isReplay = replayCvar.getBoolValue();
-	if (isReplay == true) { Log("It's a replay"); return; }
+	if (isReplay == true) { return; }
 
 
 
@@ -182,21 +193,24 @@ void RocketLeagueAssistant::LoadTeams(std::string name)
 	}
 
 	if (gameWrapper->IsInReplay()) {
-		LOG("Spectating"); return;
+		//LOG("Spectating"); return;
 	}
 
 	if (!gameWrapper->IsInFreeplay()) {
 
 		if(podiumMode == true) {
-			podiumMode = false;
+			//LOG("Podium active, not using team colors");
+			return;
+		}
+
+		if (endGameCountdown == true) {
 			return;
 		}
 
 		CVarWrapper replayCvar = cvarManager->getCvar("isReplay");
 		bool isReplay = replayCvar.getBoolValue();
-		if (isReplay == true) { Log("It's a replay"); return; }
+		if (isReplay == true) { return; }
 
-		cvarManager->log("Player in game, using team colors");
 
 		ServerWrapper server = gameWrapper->GetCurrentGameState();
 		if (!server) { LOG("Server nullcheck failed");   return; }
@@ -295,7 +309,7 @@ void RocketLeagueAssistant::LoadTeams(std::string name)
 				std::string event = "home";
 				ha_playersTeam.setValue(teamnum);
 				ha_otherTeam.setValue(1);
-				LOG("Using Home Team Colors");
+				//LOG("Using Home Team Colors");
 				SendCommands(event);
 			}   
 
@@ -303,7 +317,7 @@ void RocketLeagueAssistant::LoadTeams(std::string name)
 				std::string event = "away";
 				ha_playersTeam.setValue(teamnum);
 				ha_otherTeam.setValue(0);
-				LOG("Using Away Team Colors");
+				//LOG("Using Away Team Colors");
 				SendCommands(event);
 			}
 
@@ -355,7 +369,7 @@ void RocketLeagueAssistant::StatsHook(void* params)
 	//See if it is a replay
 	CVarWrapper replayCvar = cvarManager->getCvar("isReplay");
 	bool isReplay = replayCvar.getBoolValue();
-	if (isReplay == true) { Log("It's a replay"); return; }
+	if (isReplay == true) { return; }
 
 	//Current team CVAR
 	//get current team cvar
@@ -409,7 +423,7 @@ void RocketLeagueAssistant::StatsHook(void* params)
 		//See if it is a replay
 		CVarWrapper replayCvar = cvarManager->getCvar("isReplay");
 		bool isReplay = replayCvar.getBoolValue();
-		if (isReplay == true) { Log("It's a replay"); return; }
+		if (isReplay == true) { return; }
 
 
 		int tmpCounter = 0;
@@ -420,27 +434,27 @@ void RocketLeagueAssistant::StatsHook(void* params)
 
 			if (lastGoalScoredBy == haplayersTeam2) {
 				std::string event = "teamScored";
-				LOG("Your team scored");
+				//LOG("Your team scored");
 				SendCommands(event);
 			}
 
 			if (lastGoalScoredBy != haplayersTeam2) {
 				std::string event = "otherTeamScored";
-				LOG("Other team scored");
+				//LOG("Other team scored");
 				SendCommands(event);
 			}
 
 		}
 
-		LOG("Other Team's Score: {}", teams.Get(haotherTeam2).GetScore());
-		LOG("Your Team's Score: {}", teams.Get(haplayersTeam2).GetScore());
+		//LOG("Other Team's Score: {}", teams.Get(haotherTeam2).GetScore());
+		//LOG("Your Team's Score: {}", teams.Get(haplayersTeam2).GetScore());
 
 		LOG("Using Goals Hook", lastGoalScoredBy);
 	}
 	//LOG("{}", statEvent.GetEventName());
 	
 	if (statEvent.GetEventName() == "Demolish") {
-		LOG("Demo Occured"); 
+		//LOG("Demo Occured"); 
 		CVarWrapper demosEnabledCvar = cvarManager->getCvar("demos_enabled");
 		bool demosEnabled = demosEnabledCvar.getBoolValue();
 		if (!demosEnabled) { LOG("Demos Automations are not enabled"); return; }
@@ -560,8 +574,13 @@ void RocketLeagueAssistant::MainMenuHook(std::string name)
 	//	UpdateModal();
 	//}
 	
-	LOG("MainMenu Hook");
+	//LOG("MainMenu Hook");
 
+	if (podiumMode == true || endGameCountdown == true) {
+		podiumMode = false;
+		endGameCountdown = false;
+		return;
+	}
 	//Check if plugin is enabled
 	CVarWrapper enableCvar = cvarManager->getCvar("ha_enabled");
 	bool enabled = enableCvar.getBoolValue();
@@ -664,14 +683,11 @@ void RocketLeagueAssistant::EndGameCountdownHook(std::string name)
 	CVarWrapper endGameCountdownEnabledCvar = cvarManager->getCvar("endGameCountdown_enabled");
 	bool endGameCountdownEnabled = endGameCountdownEnabledCvar.getBoolValue();
 	if (!endGameCountdownEnabled) { LOG("End of Game Countdown Automations are not enabled"); return; }
-
+	endGameCountdown = true;
 	//Get End Game Countdown automation url, transform, and convert to string
 	std::string event = "endGameCountdown";
-	LOG("Using matchend Hook");
+	LOG("Using matchcountdown Hook");
 	SendCommands(event);
-
-
-
 }
 
 void RocketLeagueAssistant::MatchEndHook(std::string name)
@@ -692,8 +708,10 @@ void RocketLeagueAssistant::MatchEndHook(std::string name)
 	std::string event = "matchEnded";
 	LOG("Using matchend Hook");
 	SendCommands(event);
-
-
+	if ( endGameCountdown == true) {
+		endGameCountdown = false;
+		return;
+	}
 
 }
 
