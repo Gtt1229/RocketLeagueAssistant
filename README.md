@@ -5,7 +5,8 @@ If you *really* want to buy me a coffee: [![ko-fi](https://ko-fi.com/img/githubb
 
 ## Discord: [Rocket League Assistant](https://discord.gg/8UDX9eVUFb)
 
-<img width="1280" height="640" alt="rocketleagueAssistantLogoGithub" src="https://github.com/user-attachments/assets/0ae688c5-94a9-4ce3-9049-e950dcc8b16b" />
+![RLABanner](https://github.com/user-attachments/assets/0e1a93d5-99fe-4958-8c1e-f7e671fe2d62)
+
 
 ## ⭐Special thanks to those in the Discord and notably [Branky](https://github.com/ItsBranK) and [JerryTheBee](https://github.com/ubelhj)⭐
 And some other person named Josh
