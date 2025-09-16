@@ -5,14 +5,16 @@ If you *really* want to buy me a coffee: [![ko-fi](https://ko-fi.com/img/githubb
 
 ## Discord: [Rocket League Assistant](https://discord.gg/8UDX9eVUFb)
 
-![RLABanner](https://github.com/user-attachments/assets/0e1a93d5-99fe-4958-8c1e-f7e671fe2d62)
-
+![RLABanner](https://github.com/user-attachments/assets/49f5975c-f510-4585-8715-4d09a63ffd50)
 
 ## ⭐Special thanks to those in the Discord and notably [Branky](https://github.com/ItsBranK) and [JerryTheBee](https://github.com/ubelhj)⭐
 And some other person named Josh
 
 # Home Assistant Configuration
 The plugin utilizes Home Assistant's built in Webhook automation trigger with JSON-based conditions.
+
+# ⭐MMR Update!⭐
+With the addition of MMR, you can now track your MMR and store it as entities within HomeAssistant. I highly recommend using the [Rocket League Assistant Companion Integration](https://github.com/Gtt1229/RocketLeagueAssistant-Companion)
 
 ## Home Assistant Automations Configuration:
 
