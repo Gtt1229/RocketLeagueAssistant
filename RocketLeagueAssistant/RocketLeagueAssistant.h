@@ -40,6 +40,9 @@ public:
 	void Replay(std::string name);
 	void NotReplay(std::string name);
 	void SendCommands(std::string event);
+	std::string GetMMRData();
+	void OnMatchWinnerSet(std::string eventName);
+	void CheckMMRAndSend(int retryCount);
 	void PodiumMode(std::string name);
 	std::string GenWebHook();
 	std::string GenAutomationID();

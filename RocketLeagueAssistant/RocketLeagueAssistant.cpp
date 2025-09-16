@@ -35,6 +35,7 @@ void RocketLeagueAssistant::onLoad()
 	cvarManager->registerCvar("matchCountdown_enabled", "1", "Enable Match Countdown Webhook", true, true, 0, true, 1);
 	cvarManager->registerCvar("endGameCountdown_enabled", "1", "Enable Match End Webhook", true, true, 0, true, 1);
 	cvarManager->registerCvar("matchEnd_enabled", "1", "Enable Match End Webhook", true, true, 0, true, 1);
+	cvarManager->registerCvar("mmr_enabled", "1", "Enable MMR/Rank Data in JSON", true, true, 0, true, 1);
 	cvarManager->registerCvar("exit_enabled", "1", "Enable Exit Webhook", true, true, 0, true, 1);
 	cvarManager->registerCvar("isReplay", "0", "Replay boolean", true, true, 0, true, 1);
 	cvarManager->registerCvar("hideURL", "false", "HideURL boolean", true, true, 0, true, 1);
@@ -129,6 +130,8 @@ void RocketLeagueAssistant::LoadHooks()
 	//Not sure which of these is best, the EventMatchEnded is only called if the podium is shown, so added another for good measure.
 	gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.OnMatchEnded", std::bind(&RocketLeagueAssistant::MatchEndHook, this, std::placeholders::_1));
 	gameWrapper->HookEvent("Function TAGame.PRI_TA.ServerVoteToForfeit", std::bind(&RocketLeagueAssistant::MatchEndHook, this, std::placeholders::_1));
+	// Hook for updated MMR data
+	gameWrapper->HookEvent("Function TAGame.GameEvent_Soccar_TA.OnMatchWinnerSet", std::bind(&RocketLeagueAssistant::OnMatchWinnerSet, this, std::placeholders::_1));
 	//
 
 	//Main Menu
@@ -707,7 +710,15 @@ void RocketLeagueAssistant::MatchEndHook(std::string name)
 	//Get match end automation url, transform, and convert to string
 	std::string event = "matchEnded";
 	LOG("Using matchend Hook");
-	SendCommands(event);
+	
+	// Check if MMR is enabled
+	CVarWrapper mmrEnabledCvar = cvarManager->getCvar("mmr_enabled");
+	bool mmrEnabled = mmrEnabledCvar && mmrEnabledCvar.getBoolValue();
+	
+	// Only send immediately if MMR is disabled
+	if (!mmrEnabled) {
+		SendCommands(event);
+	}	
 	if ( endGameCountdown == true) {
 		endGameCountdown = false;
 		return;

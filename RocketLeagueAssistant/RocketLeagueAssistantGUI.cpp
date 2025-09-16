@@ -44,6 +44,8 @@ void RocketLeagueAssistant::RenderSettings() {
 
 	CVarWrapper exitEnableCvar = cvarManager->getCvar("exit_enabled");
 
+	CVarWrapper mmrEnabledCvar = cvarManager->getCvar("mmr_enabled");
+
 	CVarWrapper haJsonURLCvargui = cvarManager->getCvar("ha_jsonURL");
 
 	CVarWrapper haHaBaseURLCvargui = cvarManager->getCvar("ha_haBaseURL");
@@ -65,6 +67,7 @@ void RocketLeagueAssistant::RenderSettings() {
 	if (!mainmenuEnableCvar) { return; }
 	if (!matchCountdownEnableCvar) { return; }
 	if (!exitEnableCvar) { return; }
+	if (!mmrEnabledCvar) { return; }
 
 
 
@@ -210,6 +213,17 @@ void RocketLeagueAssistant::RenderSettings() {
 		}
 		if (ImGui::IsItemHovered()) {
 			ImGui::SetTooltip("Toggle Webhook");
+		}
+
+		//MMR Data hook Gui
+
+		bool mmrEnabled = mmrEnabledCvar.getBoolValue();
+
+		if (ImGui::Checkbox("Enable MMR/Rank Data in Match End Webhook", &mmrEnabled)) {
+			mmrEnabledCvar.setValue(mmrEnabled);
+		}
+		if (ImGui::IsItemHovered()) {
+			ImGui::SetTooltip("Include comprehensive MMR and rank data for all playlists when match ends");
 		}
 
 
