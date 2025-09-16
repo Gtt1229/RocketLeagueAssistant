@@ -14,6 +14,9 @@ And some other person named Josh
 # Home Assistant Configuration
 The plugin utilizes Home Assistant's built in Webhook automation trigger with JSON-based conditions.
 
+# ⭐MMR Update!⭐
+With the addition of MMR, you can now track your MMR and store it as entities within HomeAssistant. I highly recommend using the [Rocket League Assistant Companion Integration](https://github.com/Gtt1229/RocketLeagueAssistant-Companion)
+
 ## Home Assistant Automations Configuration:
 
 - [Option 1](#option-1---generate-the-base-automation-using-the-in-game-plugin-settings-window) - Use a Long-Lived Access Token to automatically create a base automation using Home Assistant's API
